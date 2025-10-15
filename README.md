@@ -1,7 +1,7 @@
 
  🎶 Symphony in C++ — A JUCE Audio Player
 
-A modular audio player built with C++ and the JUCE framework**, designed to demonstrate key Object-Oriented Programming (OOP) principles such as Abstraction, Encapsulation, Inheritance, and Polymorphism.
+A modular audio player built with C++ and the JUCE framework, designed to demonstrate key Object-Oriented Programming (OOP) principles such as Abstraction, Encapsulation, Inheritance, and Polymorphism.
 
 
 
@@ -41,7 +41,7 @@ A modular audio player built with C++ and the JUCE framework**, designed to demo
 
 | Name            | ID        | Role                        |
 | --------------- | --------- | --------------------------- |
-| Mohamed Ibrahim | 202500123 |                             |
+| Mohamed Ibrahim | 20242426  |                             |
 | Hamza Mohamed   | 20242422  |                             |
 | Mostafa Mahmoud | 20240599  |                             |
 
