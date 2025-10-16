@@ -2,10 +2,10 @@
 
 MainComponent::MainComponent()
 {
-	addAndMakeVisible(player1);
-
-	setSize(600, 400);
-	setAudioChannels(0, 2);
+    addAndMakeVisible(player1);
+	
+    setSize(600, 400);
+    setAudioChannels(0, 2);
 }
 
 MainComponent::~MainComponent()
@@ -13,25 +13,30 @@ MainComponent::~MainComponent()
     shutdownAudio();
 }
 
-
-void MainComponent::prepareToPlay(int sampelsPerBlockExpected, double sampleRate)
+void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    player1.prepareToPlay(samplePerBlockExpected, sampleRate);
+    player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-	bufferToFill.clearActiveBufferRegion();	
-	player1.getNextAudioBlock(bufferToFill);
+    player1.getNextAudioBlock(bufferToFill);
 }
 
 void MainComponent::releaseResources()
 {
-	player1.releaseResources();
+    player1.releaseResources();
+}
+
+void MainComponent::paint(juce::Graphics& g)
+{
+    g.fillAll(juce::Colours::darkgrey);
+    g.setColour(juce::Colours::white);
+    g.setFont(20.0f);
+    g.drawText("Main Component", getLocalBounds(), juce::Justification::centredTop);
 }
 
 void MainComponent::resized()
 {
-	player1.setBounds(20, 20, getWidth() - 40, getHeight() - 40);
+	player1.setBounds(getLocalBounds());
 }
-
