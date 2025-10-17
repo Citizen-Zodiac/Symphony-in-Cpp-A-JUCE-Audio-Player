@@ -12,15 +12,18 @@ public:
     void releaseResources() override;
 
     bool loadFile(const juce::File& file);
-    void play();
+    void restart();
     void stop();
+
+    void play();
+    void pause();
+    void goToStart();
+    void goToEnd();
+
     void setGain(float gain);
     void setPosition(double position);
     double getPosition() const;
     double getLength() const;
-    void pause();
-    void goToStart();
-    void goToEnd();
 
 private:
     juce::AudioFormatManager formatManager;

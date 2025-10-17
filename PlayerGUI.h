@@ -2,36 +2,35 @@
 #include <JuceHeader.h>
 #include "PlayerAudio.h"
 
-class PlayerGUI : public juce::AudioAppComponent,
-    public juce::Button::Listener,
-    public juce::Slider::Listener
+class PlayerGUI : public juce::Component,
+                  public juce::Button::Listener,
+                  public juce::Slider::Listener
 {
 public:
-    PlayerGUI();
+    PlayerGUI(PlayerAudio&player);
     ~PlayerGUI() override;
-
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) override;
-    void releaseResources() override;
 
     void paint(juce::Graphics& g) override;
     void resized() override;
 
 private:
-    PlayerAudio playerAudio;
+    PlayerAudio& player;
+
+  
+
 
     // GUI Elements
     juce::TextButton loadButton{ "Load File" };
     juce::TextButton restartButton{ "Restart" };
     juce::TextButton stopButton{ "Stop" };
 	juce::TextButton playButton{ "Play" };
-	juce::TextButton pauseButton{ "Pause" };
-   
+    juce::TextButton pauseButton{ "Pause" };
     juce::TextButton goToEnd{ "Go to End" };
-	juce::TextButton goToStart{ "Go to Start" };
+    juce::TextButton goToStart{ "Go to Start" };
+
     juce::Slider volumeSlider;
 
-    std::unique_ptr<juce::FileChooser> fileChooser;
+    std::unique_ptr<juce::FileChooser> fileChooser;  
 
     // Event handlers
     void buttonClicked(juce::Button* button) override;

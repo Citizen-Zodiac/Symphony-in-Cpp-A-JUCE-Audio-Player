@@ -7,7 +7,9 @@ PlayerAudio::PlayerAudio()
 
 PlayerAudio::~PlayerAudio()
 {
+    transportSource.stop();
     transportSource.setSource(nullptr);
+    readerSource.reset();
 }
 
 void PlayerAudio::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -27,21 +29,38 @@ void PlayerAudio::releaseResources()
 
 bool PlayerAudio::loadFile(const juce::File& file)
 {
-    if (file.existsAsFile())
-    {
+    
+    
         if (auto* reader = formatManager.createReaderFor(file))
         {
+            // ?? Disconnect old source first
             transportSource.stop();
             transportSource.setSource(nullptr);
             readerSource.reset();
 
+            // Create new reader source
             readerSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
 
-            transportSource.setSource(readerSource.get(), 0, nullptr, reader->sampleRate);
+            // Attach safely
+            transportSource.setSource(readerSource.get(),
+                0,
+                nullptr,
+                reader->sampleRate);
+            
             return true;
         }
-    }
-    return false;
+        return false;
+}
+void PlayerAudio::restart()
+{
+    transportSource.setPosition(0.0);
+    transportSource.start();
+}
+
+void PlayerAudio::stop()
+{
+    transportSource.stop();
+    transportSource.setPosition(0.0);
 }
 
 void PlayerAudio::play()
@@ -49,9 +68,19 @@ void PlayerAudio::play()
     transportSource.start();
 }
 
-void PlayerAudio::stop()
+void PlayerAudio::pause()
 {
     transportSource.stop();
+}
+
+void PlayerAudio::goToEnd()
+{
+    transportSource.setPosition(transportSource.getLengthInSeconds());
+}
+
+void PlayerAudio::goToStart()
+{
+    transportSource.setPosition(0.0);
 }
 
 void PlayerAudio::setGain(float gain)
@@ -74,17 +103,5 @@ double PlayerAudio::getLength() const
     return transportSource.getLengthInSeconds();
 }
 
-void PlayerAudio::pause()
-{
-    transportSource.stop();
-}
 
-void PlayerAudio::goToEnd()
-{
-    transportSource.setPosition(transportSource.getLengthInSeconds());
-}
 
-void PlayerAudio::goToStart()
-{
-    transportSource.setPosition(0.0);
-}
