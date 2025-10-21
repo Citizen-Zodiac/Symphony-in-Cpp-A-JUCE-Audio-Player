@@ -63,15 +63,18 @@ void PlayerAudio::stop()
     transportSource.setPosition(0.0);
 }
 
-void PlayerAudio::play()
+void PlayerAudio::play(bool c)
 {
-    transportSource.start();
+    if (c)
+    {
+        transportSource.start();
+    }
+    else
+    {
+        transportSource.stop();
+    }
 }
 
-void PlayerAudio::pause()
-{
-    transportSource.stop();
-}
 
 void PlayerAudio::goToEnd()
 {

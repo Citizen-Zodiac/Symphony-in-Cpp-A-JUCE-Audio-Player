@@ -15,8 +15,8 @@ public:
     void restart();
     void stop();
 
-    void play();
-    void pause();
+    void play(bool ch);
+    
     void goToStart();
     void goToEnd();
 

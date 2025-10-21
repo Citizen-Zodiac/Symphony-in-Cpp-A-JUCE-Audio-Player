@@ -27,7 +27,6 @@ private:
     juce::TextButton restartButton{ "Restart" };
     juce::TextButton stopButton{ "Stop" };
 	juce::TextButton playButton{ "Play" };
-    juce::TextButton pauseButton{ "Pause" };
     juce::TextButton goToEnd{ "Go to End" };
     juce::TextButton goToStart{ "Go to Start" };
 
