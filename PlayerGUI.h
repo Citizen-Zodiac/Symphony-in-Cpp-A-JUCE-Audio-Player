@@ -7,16 +7,19 @@ class PlayerGUI : public juce::Component,
                   public juce::Slider::Listener
 {
 public:
-    PlayerGUI(PlayerAudio&player);
+    PlayerGUI();
     ~PlayerGUI() override;
+
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) ;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) ;
+    void releaseResources() ;
 
     void paint(juce::Graphics& g) override;
     void resized() override;
 
 private:
-    PlayerAudio& player;
+    PlayerAudio playerAudio;
 
-  
 
 
     // GUI Elements

@@ -15,17 +15,17 @@ MainComponent::~MainComponent()
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    playerAudio.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    playerGUI.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    playerAudio.getNextAudioBlock(bufferToFill);
+    playerGUI.getNextAudioBlock(bufferToFill);
 }
 
 void MainComponent::releaseResources()
 {
-    playerAudio.releaseResources();
+    playerGUI.releaseResources();
 }
 
 void MainComponent::paint(juce::Graphics& g)

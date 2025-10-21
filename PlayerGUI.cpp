@@ -1,6 +1,6 @@
 #include "PlayerGUI.h"
 
-PlayerGUI::PlayerGUI(PlayerAudio&p) : player(p)
+PlayerGUI::PlayerGUI()
 {
     // Add buttons
     for (auto* btn : { &loadButton, &restartButton , &stopButton, &playButton,&pauseButton, &goToEnd, &goToStart,
@@ -20,6 +20,21 @@ PlayerGUI::PlayerGUI(PlayerAudio&p) : player(p)
 }
 
 PlayerGUI::~PlayerGUI() {}
+
+void PlayerGUI::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+{
+    playerAudio.prepareToPlay(samplesPerBlockExpected, sampleRate);
+}
+
+void PlayerGUI::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
+{
+    playerAudio.getNextAudioBlock(bufferToFill);
+}
+
+void PlayerGUI::releaseResources()
+{
+    playerAudio.releaseResources();
+}
 
 
 void PlayerGUI::paint(juce::Graphics& g)
@@ -60,7 +75,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                 auto file = fc.getResult();
                 if (file.existsAsFile())
                 {
-                    player.loadFile(file);
+                    playerAudio.loadFile(file);
                 }
             });                              
     }
@@ -68,33 +83,33 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     else if (button == &restartButton)
     {
         // Restart playback
-        player.restart();
+        playerAudio.restart();
     }
     else if (button == &stopButton)
     {
         // Stop playback and reset position
-        player.stop();
-        player.setPosition(0.0);
+        playerAudio.stop();
+        playerAudio.setPosition(0.0);
     }
 	else if (button == &playButton)
         {
         // Start playback
-        player.play();
+        playerAudio.play();
     }
     else if (button == &pauseButton)
     {
         // Pause playback
-        player.pause();
+        playerAudio.pause();
     }
     else if (button == &goToEnd)
     {
         // Go to end of the track
-        player.goToEnd();
+        playerAudio.goToEnd();
     }
     else if (button == &goToStart)
     {
         // Go to start of the track
-        player.goToStart();
+        playerAudio.goToStart();
 	}
 }
 
@@ -102,6 +117,6 @@ void PlayerGUI::sliderValueChanged(juce::Slider* slider)
 {
     if (slider == &volumeSlider)
     {
-        player.setGain((float)slider->getValue());
+        playerAudio.setGain((float)slider->getValue());
     }
 }

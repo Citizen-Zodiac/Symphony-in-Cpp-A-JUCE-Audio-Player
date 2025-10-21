@@ -1,7 +1,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include"PlayerAudio.h"
 #include "PlayerGUI.h"
 
 class MainComponent : public juce::AudioAppComponent
@@ -18,8 +17,7 @@ public:
     void resized() override;
 
 private:
-    PlayerAudio playerAudio;
-    PlayerGUI playerGUI{ playerAudio };
+       PlayerGUI playerGUI;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
