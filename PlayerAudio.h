@@ -7,9 +7,9 @@ public:
     PlayerAudio();
     ~PlayerAudio() override;
 
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) ;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) ;
-    void releaseResources() ;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate);
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill);
+    void releaseResources();
 
     bool loadFile(const juce::File& file);
     void restart();

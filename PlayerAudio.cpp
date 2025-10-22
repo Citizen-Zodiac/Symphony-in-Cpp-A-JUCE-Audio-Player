@@ -103,5 +103,3 @@ double PlayerAudio::getLength() const
     return transportSource.getLengthInSeconds();
 }
 
-
-

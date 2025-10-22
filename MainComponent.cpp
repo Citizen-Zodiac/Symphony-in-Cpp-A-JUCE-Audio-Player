@@ -38,5 +38,5 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-	playerGUI.setBounds(getLocalBounds());
+    playerGUI.setBounds(getLocalBounds());
 }
