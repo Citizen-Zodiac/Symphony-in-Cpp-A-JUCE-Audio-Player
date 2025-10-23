@@ -29,6 +29,11 @@ private:
 	juce::TextButton playButton{ "Play" };
     juce::TextButton goToEnd{ "Go to End" };
     juce::TextButton goToStart{ "Go to Start" };
+    juce::TextButton loopButton{ "Loop" };
+    juce::TextButton muteButton{ "mute" };
+
+    bool isMuted = false;
+    float previousVolume = 0.5f;
 
     juce::Slider volumeSlider;
 

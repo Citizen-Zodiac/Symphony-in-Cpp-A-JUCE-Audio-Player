@@ -86,6 +86,13 @@ void PlayerAudio::goToStart()
     transportSource.setPosition(0.0);
 }
 
+void PlayerAudio::setLooping(bool shouldloop)
+{
+    if (readerSource != nullptr)
+        readerSource->setLooping(shouldloop);
+}
+
+
 void PlayerAudio::setGain(float gain)
 {
     transportSource.setGain(gain);

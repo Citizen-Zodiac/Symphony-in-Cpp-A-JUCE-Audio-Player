@@ -4,7 +4,7 @@ PlayerGUI::PlayerGUI()
 {
     // Add buttons
     for (auto* btn : { &loadButton, &restartButton , &stopButton, &playButton, &goToEnd, &goToStart,
-        })
+        &muteButton, &loopButton})
     {
         btn->addListener(this);
         addAndMakeVisible(*btn);
@@ -49,13 +49,17 @@ void PlayerGUI::resized()
     restartButton.setBounds(140, y, 80, 40);
     stopButton.setBounds(240, y, 80, 40);
 	playButton.setBounds(340, y, 80, 40);
-	goToEnd.setBounds(440, y, 100, 40);
-	goToStart.setBounds(560, y, 100, 40);
+	goToEnd.setBounds(440, y, 80, 40);
+	goToStart.setBounds(540, y, 80, 40);
+    loopButton.setBounds(640, y, 80, 40);
+    muteButton.setBounds(740, y, 60, 40);
+
     volumeSlider.setBounds(20, 100, getWidth() - 40, 30);
 }
 
 void PlayerGUI::buttonClicked(juce::Button* button)
 {
+    static bool isPlaying = false;
     if (button == &loadButton)
     {
         juce::FileChooser chooser("Select audio files...",
@@ -83,17 +87,22 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     {
         // Restart playback
         playerAudio.restart();
+        playButton.setButtonText("Pause");
+        isPlaying = true;
+
     }
+
     else if (button == &stopButton)
     {
         // Stop playback and reset position
         playerAudio.stop();
         playerAudio.setPosition(0.0);
+        playButton.setButtonText("Play");
+		isPlaying = false;
     }
 	else if (button == &playButton)
         {
         // Start & Pause playback
-		static bool isPlaying = false;
 		isPlaying = !isPlaying;
 		playerAudio.play(isPlaying);
 
@@ -110,12 +119,45 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         // Go to start of the track
         playerAudio.goToStart();
 	}
+
+    else if (button == &loopButton)
+    {
+        // Toggle looping
+        static bool isLooping = false;
+        isLooping = !isLooping;
+        playerAudio.setLooping(isLooping);
+
+        // Change button text to show state
+        loopButton.setButtonText(isLooping ? "Loop" : "Single");
+    }
+
+    else if (button == &muteButton)
+    {
+
+        if (!isMuted)
+        {
+            previousVolume = (float)volumeSlider.getValue();
+            playerAudio.setGain(0.0f);
+            volumeSlider.setValue(0.0f, juce::dontSendNotification);
+            muteButton.setButtonText("Unmute");
+        }
+        else
+        {
+            playerAudio.setGain(previousVolume);
+            volumeSlider.setValue(previousVolume, juce::dontSendNotification);
+            muteButton.setButtonText("Mute");
+        }
+        isMuted = !isMuted;
+    }
+
 }
 
 void PlayerGUI::sliderValueChanged(juce::Slider* slider)
 {
     if (slider == &volumeSlider)
     {
+        if (!isMuted)
+            previousVolume = (float)slider->getValue();
         playerAudio.setGain((float)slider->getValue());
     }
 }

@@ -15,6 +15,7 @@ public:
     void restart();
     void stop();
 
+    void setLooping(bool shouldloop);
     void play(bool ch);
     
     void goToStart();
