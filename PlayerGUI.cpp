@@ -60,6 +60,8 @@ void PlayerGUI::resized()
 void PlayerGUI::buttonClicked(juce::Button* button)
 {
     static bool isPlaying = false;
+    static bool isLooping = false;
+
     if (button == &loadButton)
     {
         juce::FileChooser chooser("Select audio files...",
@@ -113,6 +115,20 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     {
         // Go to end of the track
         playerAudio.goToEnd();
+        if (isPlaying)
+        {
+            playerAudio.stop();
+            isPlaying = false;
+            playButton.setButtonText("Play");
+		}
+        if (isLooping)
+        {
+            playerAudio.setPosition(0.0);
+            playerAudio.play(true);
+            isPlaying = true;
+            playButton.setButtonText("Pause");
+		}
+       
     }
     else if (button == &goToStart)
     {
@@ -123,12 +139,11 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     else if (button == &loopButton)
     {
         // Toggle looping
-        static bool isLooping = false;
         isLooping = !isLooping;
         playerAudio.setLooping(isLooping);
 
         // Change button text to show state
-        loopButton.setButtonText(isLooping ? "Loop" : "Single");
+        loopButton.setButtonText(isLooping ? "Single" : "Loop");
     }
 
     else if (button == &muteButton)
