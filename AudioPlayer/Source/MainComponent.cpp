@@ -3,7 +3,7 @@
 MainComponent::MainComponent()
 {
     addAndMakeVisible(playerGUI);
-	
+
     setSize(600, 400);
     setAudioChannels(0, 2);
 }
@@ -38,5 +38,5 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-	playerGUI.setBounds(getLocalBounds());
+    playerGUI.setBounds(getLocalBounds());
 }

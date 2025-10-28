@@ -4,11 +4,11 @@ PlayerGUI::PlayerGUI()
 {
     // Add buttons
     for (auto* btn : { &loadButton, &restartButton , &stopButton, &playButton, &goToEnd, &goToStart,
-        &muteButton, &loopButton})
+        &muteButton, &loopButton })
     {
         btn->addListener(this);
         addAndMakeVisible(*btn);
-		addAndMakeVisible(metadataLabel);
+        addAndMakeVisible(metadataLabel);
     }
 
     // Volume slider setup
@@ -18,12 +18,12 @@ PlayerGUI::PlayerGUI()
     addAndMakeVisible(volumeSlider);
 
     // Label style
-	metadataLabel.setJustificationType(juce::Justification::centred);
-	metadataLabel.setText("No file loaded", juce::dontSendNotification);
-	metadataLabel.setColour(juce::Label::textColourId, juce::Colours::white);
-	metadataLabel.setFont(juce::Font(16.0f, juce::Font::plain));
-    
-	// background color
+    metadataLabel.setJustificationType(juce::Justification::centred);
+    metadataLabel.setText("No file loaded", juce::dontSendNotification);
+    metadataLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    metadataLabel.setFont(juce::Font(16.0f, juce::Font::plain));
+
+    // background color
     setOpaque(true);
 }
 
@@ -56,13 +56,13 @@ void PlayerGUI::resized()
     loadButton.setBounds(20, y, 100, 40);
     restartButton.setBounds(140, y, 80, 40);
     stopButton.setBounds(240, y, 80, 40);
-	playButton.setBounds(340, y, 80, 40);
-	goToEnd.setBounds(440, y, 80, 40);
-	goToStart.setBounds(540, y, 80, 40);
+    playButton.setBounds(340, y, 80, 40);
+    goToEnd.setBounds(440, y, 80, 40);
+    goToStart.setBounds(540, y, 80, 40);
     loopButton.setBounds(640, y, 80, 40);
     muteButton.setBounds(740, y, 60, 40);
 
-	metadataLabel.setBounds(20, 70, getWidth() - 40, 20);
+    metadataLabel.setBounds(20, 70, getWidth() - 40, 20);
     volumeSlider.setBounds(20, 100, getWidth() - 40, 30);
 }
 
@@ -90,21 +90,21 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                 if (file.existsAsFile())
                 {
                     playerAudio.loadFile(file);
-                    
+
                     metadataLabel.setText("Title: " + playerAudio.getTitle() +
                         " | Artist: " + playerAudio.getArtist() +
-                        " | Duration: " + juce::String(playerAudio.getDuration()/60.0 ,2) + "min",
-						juce::dontSendNotification);    
+                        " | Duration: " + juce::String(playerAudio.getDuration() / 60.0, 2) + "min",
+                        juce::dontSendNotification);
 
                 }
                 else
                 {
-					metadataLabel.setText("No file loaded", juce::dontSendNotification);
+                    metadataLabel.setText("No file loaded", juce::dontSendNotification);
                 }
-            });                              
-        
+            });
+
     }
-    
+
     else if (button == &restartButton)
     {
         // Restart playback
@@ -120,16 +120,16 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         playerAudio.stop();
         playerAudio.setPosition(0.0);
         playButton.setButtonText("Play");
-		isPlaying = false;
+        isPlaying = false;
     }
-	else if (button == &playButton)
-        {
+    else if (button == &playButton)
+    {
         // Start & Pause playback
-		isPlaying = !isPlaying;
-		playerAudio.play(isPlaying);
+        isPlaying = !isPlaying;
+        playerAudio.play(isPlaying);
 
-		// Change button text
-		playButton.setButtonText(isPlaying ? "Pause" : "Play");
+        // Change button text
+        playButton.setButtonText(isPlaying ? "Pause" : "Play");
     }
     else if (button == &goToEnd)
     {
@@ -140,21 +140,21 @@ void PlayerGUI::buttonClicked(juce::Button* button)
             playerAudio.stop();
             isPlaying = false;
             playButton.setButtonText("Play");
-		}
+        }
         if (isLooping)
         {
             playerAudio.setPosition(0.0);
             playerAudio.play(true);
             isPlaying = true;
             playButton.setButtonText("Pause");
-		}
-       
+        }
+
     }
     else if (button == &goToStart)
     {
         // Go to start of the track
         playerAudio.goToStart();
-	}
+    }
 
     else if (button == &loopButton)
     {
@@ -163,7 +163,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         playerAudio.setLooping(isLooping);
 
         // Change button text to show state
-        loopButton.setButtonText(isLooping ? "Single" : "Loop");
+        loopButton.setButtonText(isLooping ? "Loop" : "Single");
     }
 
     else if (button == &muteButton)
