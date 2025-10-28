@@ -29,27 +29,33 @@ void PlayerAudio::releaseResources()
 
 bool PlayerAudio::loadFile(const juce::File& file)
 {
+    
+    
+        if (auto* reader = formatManager.createReaderFor(file))
+        {
+            // ?? Disconnect old source first
+            transportSource.stop();
+            transportSource.setSource(nullptr);
+            readerSource.reset();
 
+            // Create new reader source
+            readerSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+            transportSource.setSource(readerSource.get(),0,nullptr,reader->sampleRate);
 
-    if (auto* reader = formatManager.createReaderFor(file))
-    {
-        // ?? Disconnect old source first
-        transportSource.stop();
-        transportSource.setSource(nullptr);
-        readerSource.reset();
+            // metadata //
+			auto values = reader->metadataValues;
+			title = values["title"];
+			artist = values["artist"];
+			duration = reader->lengthInSamples / reader->sampleRate;
 
-        // Create new reader source
-        readerSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-
-        // Attach safely
-        transportSource.setSource(readerSource.get(),
-            0,
-            nullptr,
-            reader->sampleRate);
-
-        return true;
-    }
-    return false;
+            if(title.isEmpty())
+				title = file.getFileNameWithoutExtension();
+			if (artist.isEmpty())
+				artist = "Unknown Artist";
+            
+            return true;
+        }
+        return false;
 }
 void PlayerAudio::restart()
 {
@@ -63,15 +69,18 @@ void PlayerAudio::stop()
     transportSource.setPosition(0.0);
 }
 
-void PlayerAudio::play()
+void PlayerAudio::play(bool c)
 {
-    transportSource.start();
+    if (c)
+    {
+        transportSource.start();
+    }
+    else
+    {
+        transportSource.stop();
+    }
 }
 
-void PlayerAudio::pause()
-{
-    transportSource.stop();
-}
 
 void PlayerAudio::goToEnd()
 {
@@ -82,6 +91,13 @@ void PlayerAudio::goToStart()
 {
     transportSource.setPosition(0.0);
 }
+
+void PlayerAudio::setLooping(bool shouldloop)
+{
+    if (readerSource != nullptr)
+        readerSource->setLooping(shouldloop);
+}
+
 
 void PlayerAudio::setGain(float gain)
 {
@@ -102,10 +118,3 @@ double PlayerAudio::getLength() const
 {
     return transportSource.getLengthInSeconds();
 }
-void PlayerAudio::setLooping(bool shouldloop) {
-    if (readerSource != nullptr)
-        readerSource->setLooping(shouldloop);
-}
-
-
-
