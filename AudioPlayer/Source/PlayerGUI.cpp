@@ -2,6 +2,7 @@
 
 PlayerGUI::PlayerGUI()
 {
+    setSize(800, 200);
     // Add buttons
     for (auto* btn : { &loadButton, &restartButton , &stopButton, &playButton, &goToEnd, &goToStart,
         &muteButton, &loopButton })
@@ -17,6 +18,17 @@ PlayerGUI::PlayerGUI()
     volumeSlider.addListener(this);
     addAndMakeVisible(volumeSlider);
 
+    // POSITION SLIDER SETUP
+    positionSlider.setRange(0.0, 1.0, 0.001);
+    positionSlider.setValue(0.0);
+    positionSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    positionSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+    positionSlider.addListener(this);
+    addAndMakeVisible(positionSlider);
+
+    // Start timer for position updates (every 30ms)
+    startTimer(30);
+
     // Label style
     metadataLabel.setJustificationType(juce::Justification::centred);
     metadataLabel.setText("No file loaded", juce::dontSendNotification);
@@ -25,6 +37,15 @@ PlayerGUI::PlayerGUI()
 
     // background color
     setOpaque(true);
+
+    // Position Time labels setup
+    currentTimeLabel.setText("0:00", juce::dontSendNotification);
+    currentTimeLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(currentTimeLabel);
+
+    totalTimeLabel.setText("0:00", juce::dontSendNotification);
+    totalTimeLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(totalTimeLabel);
 }
 
 PlayerGUI::~PlayerGUI() {}
@@ -53,17 +74,25 @@ void PlayerGUI::paint(juce::Graphics& g)
 void PlayerGUI::resized()
 {
     int y = 20;
-    loadButton.setBounds(20, y, 100, 40);
-    restartButton.setBounds(140, y, 80, 40);
-    stopButton.setBounds(240, y, 80, 40);
-    playButton.setBounds(340, y, 80, 40);
-    goToEnd.setBounds(440, y, 80, 40);
-    goToStart.setBounds(540, y, 80, 40);
-    loopButton.setBounds(640, y, 80, 40);
-    muteButton.setBounds(740, y, 60, 40);
+    int buttonWidth = 80;
+    int buttonHeight = 40;
 
+    
+    loadButton.setBounds(20, y, 100, buttonHeight);
+    playButton.setBounds(130, y, buttonWidth, buttonHeight);
+    stopButton.setBounds(220, y, buttonWidth, buttonHeight);
+    restartButton.setBounds(310, y, buttonWidth, buttonHeight);
+    goToStart.setBounds(400, y, 100, buttonHeight);
+    goToEnd.setBounds(510, y, 100, buttonHeight);
+    loopButton.setBounds(620, y, buttonWidth, buttonHeight);
+    muteButton.setBounds(710, y, 70, buttonHeight);
     metadataLabel.setBounds(20, 70, getWidth() - 40, 20);
-    volumeSlider.setBounds(20, 100, getWidth() - 40, 30);
+    volumeSlider.setBounds(20, 100, getWidth() - 40, 20);
+
+    int sliderY = 140;
+    positionSlider.setBounds(70, sliderY, getWidth() - 140, 25); 
+    currentTimeLabel.setBounds(10, sliderY, 50, 25);        
+    totalTimeLabel.setBounds(getWidth() - 60, sliderY, 50, 25);   
 }
 
 void PlayerGUI::buttonClicked(juce::Button* button)
@@ -194,5 +223,33 @@ void PlayerGUI::sliderValueChanged(juce::Slider* slider)
         if (!isMuted)
             previousVolume = (float)slider->getValue();
         playerAudio.setGain((float)slider->getValue());
+    }
+    else if (slider == &positionSlider)
+    { 
+        double length = playerAudio.getLength();
+        double newPosition = positionSlider.getValue() * length;
+        playerAudio.setPosition(newPosition);
+    }
+}
+juce::String PlayerGUI::formatTime(double seconds)
+{
+    if (seconds < 0) seconds = 0;
+
+    int minutes = (int)seconds / 60;
+    int secs = (int)seconds % 60;
+
+    return juce::String::formatted("%d:%02d", minutes, secs);
+}
+
+void PlayerGUI::timerCallback()
+{
+    double length = playerAudio.getLength();
+    double currentPos = playerAudio.getPosition();
+
+    if (length > 0.0 && currentPos > 0.0)
+    {
+        positionSlider.setValue(currentPos / length, juce::dontSendNotification);
+        currentTimeLabel.setText(formatTime(currentPos), juce::dontSendNotification);
+        totalTimeLabel.setText(formatTime(length), juce::dontSendNotification);
     }
 }

@@ -2,9 +2,11 @@
 #include <JuceHeader.h>
 #include "PlayerAudio.h"
 
-class PlayerGUI : public juce::Component,
+class PlayerGUI :
+    public juce::Component,
     public juce::Button::Listener,
-    public juce::Slider::Listener
+    public juce::Slider::Listener,
+    public juce::Timer
 {
 public:
     PlayerGUI();
@@ -16,6 +18,9 @@ public:
 
     void paint(juce::Graphics& g) override;
     void resized() override;
+    void timerCallback()override;
+    
+
 
 private:
     PlayerAudio playerAudio;
@@ -35,6 +40,11 @@ private:
     float previousVolume = 0.5f;
 
     juce::Slider volumeSlider;
+    juce::Slider positionSlider;
+    juce::Label currentTimeLabel;
+    juce::Label totalTimeLabel;
+    //Time Helper Function
+    juce::String formatTime(double seconds);  
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
