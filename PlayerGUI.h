@@ -12,10 +12,11 @@ struct TrackMetadata
     juce::File file;
 };
 
-class PlayerGUI : 
+class PlayerGUI :
     public juce::Component,
     public juce::Button::Listener,
     public juce::Slider::Listener,
+    public juce::Timer,
     public juce::ListBoxModel
 {
 
@@ -29,6 +30,9 @@ public:
 
     void paint(juce::Graphics& g) override;
     void resized() override;
+    void timerCallback()override;
+    
+
 
    
     int PlayerGUI::getNumRows() override;
@@ -59,6 +63,11 @@ private:
     float previousVolume = 0.5f;
 
     juce::Slider volumeSlider;
+    juce::Slider positionSlider;
+    juce::Label currentTimeLabel;
+    juce::Label totalTimeLabel;
+    //Time Helper Function
+    juce::String formatTime(double seconds);  
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
