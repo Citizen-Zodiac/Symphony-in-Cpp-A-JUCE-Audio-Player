@@ -3,9 +3,10 @@
 PlayerGUI::PlayerGUI()
 {
     setSize(800, 200);
+    setWantsKeyboardFocus(true);
     // Add buttons
     for (auto* btn : { &loadButton, &restartButton , &stopButton, &playButton, &goToEnd, &goToStart,
-        &muteButton, &loopButton })
+        &muteButton, &loopButton,& clearABButton })
     {
         btn->addListener(this);
         addAndMakeVisible(*btn);
@@ -69,6 +70,29 @@ void PlayerGUI::releaseResources()
 void PlayerGUI::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colours::darkgrey);
+    double length = playerAudio.getLength();
+
+    if (loopPointA >= 0 && length > 0)
+    {
+        double aRatio = loopPointA / length;
+        int aX = positionSlider.getX() + (int)(aRatio * positionSlider.getWidth());
+
+        g.setColour(juce::Colours::red);
+        g.drawLine(aX, positionSlider.getY() - 10, aX, positionSlider.getY() + positionSlider.getHeight() + 10, 2.0f);
+        g.setColour(juce::Colours::white);
+        g.drawText("A", aX - 10, positionSlider.getY() - 25, 20, 20, juce::Justification::centred);
+    }
+
+    if (loopPointB >= 0 && length > 0)
+    {
+        double bRatio = loopPointB / length;
+        int bX = positionSlider.getX() + (int)(bRatio * positionSlider.getWidth());
+
+        g.setColour(juce::Colours::green);
+        g.drawLine(bX, positionSlider.getY() - 10, bX, positionSlider.getY() + positionSlider.getHeight() + 10, 2.0f);
+        g.setColour(juce::Colours::white);
+        g.drawText("B", bX - 10, positionSlider.getY() - 25, 20, 20, juce::Justification::centred);
+    }
 }
 
 void PlayerGUI::resized()
@@ -88,6 +112,7 @@ void PlayerGUI::resized()
     muteButton.setBounds(710, y, 70, buttonHeight);
     metadataLabel.setBounds(20, 70, getWidth() - 40, 20);
     volumeSlider.setBounds(20, 100, getWidth() - 40, 20);
+    clearABButton.setBounds(790, y, 80, buttonHeight);
 
     int sliderY = 140;
     positionSlider.setBounds(70, sliderY, getWidth() - 140, 25); 
@@ -213,6 +238,13 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         }
         isMuted = !isMuted;
     }
+    else if (button == &clearABButton)
+    {
+        loopPointA = -1.0;
+        loopPointB = -1.0;
+        playerAudio.clearLoopPoints();
+        repaint();  
+}
 
 }
 
@@ -251,5 +283,47 @@ void PlayerGUI::timerCallback()
         positionSlider.setValue(currentPos / length, juce::dontSendNotification);
         currentTimeLabel.setText(formatTime(currentPos), juce::dontSendNotification);
         totalTimeLabel.setText(formatTime(length), juce::dontSendNotification);
+        playerAudio.checkAndHandleLooping();
     }
+}
+
+bool PlayerGUI::keyPressed(const juce::KeyPress& key)
+{
+    double currentPos = playerAudio.getPosition();
+
+    
+    DBG("Key pressed: " << key.getKeyCode() << " Character: " << key.getTextCharacter());
+
+    if (key.getKeyCode() == 65 || key.getKeyCode() == 97) 
+    {
+        loopPointA = currentPos;
+        updateABLoopPoints();
+        repaint();
+        DBG("A point set at: " << currentPos);
+        return true;
+    }
+    else if (key.getKeyCode() == 66 || key.getKeyCode() == 98) 
+    {
+    
+        loopPointB = currentPos;
+        updateABLoopPoints();
+        repaint();
+        DBG("B point set at: " << currentPos);
+        return true;
+    }
+
+    return false;
+}
+
+void PlayerGUI::updateABLoopPoints()
+{
+ 
+    if (loopPointA >= 0)
+        playerAudio.setALoopPoint(loopPointA);
+
+    if (loopPointB >= 0)
+        playerAudio.setBLoopPoint(loopPointB);
+
+    if (loopPointA < 0 && loopPointB < 0)
+        playerAudio.clearLoopPoints();
 }

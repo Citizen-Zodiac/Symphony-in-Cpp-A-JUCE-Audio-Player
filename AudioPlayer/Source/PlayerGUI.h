@@ -19,11 +19,16 @@ public:
     void paint(juce::Graphics& g) override;
     void resized() override;
     void timerCallback()override;
+    bool keyPressed(const juce::KeyPress& key) override;
     
 
 
 private:
     PlayerAudio playerAudio;
+
+    double loopPointA = -1.0;      
+    double loopPointB = -1.0;       
+    void updateABLoopPoints();
 
 
     // GUI Elements
@@ -35,6 +40,7 @@ private:
     juce::TextButton goToStart{ "Go to Start" };
     juce::TextButton loopButton{ "Single" };
     juce::TextButton muteButton{ "Mute" };
+    juce::TextButton clearABButton{ "Clear A-B" };
 
     bool isMuted = false;
     float previousVolume = 0.5f;
