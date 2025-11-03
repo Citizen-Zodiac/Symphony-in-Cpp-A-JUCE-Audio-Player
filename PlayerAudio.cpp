@@ -118,3 +118,35 @@ double PlayerAudio::getLength() const
     return transportSource.getLengthInSeconds();
 }
 
+void PlayerAudio::setALoopPoint(double time)
+{
+    loopPointA = time;
+    abLoopEnabled = (loopPointA >= 0 && loopPointB >= 0);
+}
+
+void PlayerAudio::setBLoopPoint(double time)
+{
+    loopPointB = time;
+    abLoopEnabled = (loopPointA >= 0 && loopPointB >= 0);
+}
+
+void PlayerAudio::clearLoopPoints()
+{
+    loopPointA = -1.0;
+    loopPointB = -1.0;
+    abLoopEnabled = false;
+}
+
+void PlayerAudio::checkAndHandleLooping()
+{
+    if (abLoopEnabled && readerSource != nullptr)
+    {
+        double currentPos = getPosition();
+
+
+        if (currentPos >= loopPointB)
+        {
+            transportSource.setPosition(loopPointA);
+        }
+    }
+}

@@ -3,12 +3,11 @@
 #include "PlayerAudio.h"
 #include<string>
 #include <vector>
-
 struct TrackMetadata
 {
     juce::String title;
     juce::String artist;
-    double duration = 0;
+    double length = 0.0;
     juce::File file;
 };
 
@@ -17,7 +16,7 @@ class PlayerGUI :
     public juce::Button::Listener,
     public juce::Slider::Listener,
     public juce::Timer,
-    public juce::ListBoxModel
+    public juce::TableListBoxModel
 {
 
 public:
@@ -31,20 +30,25 @@ public:
     void paint(juce::Graphics& g) override;
     void resized() override;
     void timerCallback()override;
+    bool keyPressed(const juce::KeyPress& key) override;
     
 
 
    
     int PlayerGUI::getNumRows() override;
-    void PlayerGUI::paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override;
-
-    void PlayerGUI::mouseDown(const juce::MouseEvent& event) override;
+    void PlayerGUI::paintRowBackground( juce::Graphics& g,int row, int width, int height, bool selected) override;
+    void PlayerGUI::paintCell(juce::Graphics& g, int row, int col, int width, int height, bool selected) override;
+    void PlayerGUI::setCurrentlyPlayingRow(int row);
 private:
+    
     PlayerAudio playerAudio;
-
-    juce::ListBox trackList;
+    juce::TableListBox trackList;
     std::vector<TrackMetadata> playlist;
     int currentIndex = 0;
+    double loopPointA = -1.0;      
+    double loopPointB = -1.0;       
+    void updateABLoopPoints();
+
 
     // GUI Elements
     juce::TextButton loadButton{ "Load File" };
@@ -58,6 +62,8 @@ private:
     juce::TextButton addButton{ "Add" };
     juce::TextButton nextButton{ "Next" };
     juce::TextButton prevButoon{ "Prev" };
+    juce::TextButton removePlButton{ "Remove PL" };
+    juce::TextButton clearABButton{ "Clear A-B" };
 
     bool isMuted = false;
     float previousVolume = 0.5f;
