@@ -6,6 +6,7 @@ MainComponent::MainComponent()
 
     setSize(600, 400);
     setAudioChannels(0, 2);
+    
 }
 
 MainComponent::~MainComponent()
@@ -30,8 +31,8 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::darkgrey);
-    g.setColour(juce::Colours::white);
+    g.fillAll(juce::Colours::white);
+    g.setColour(juce::Colours::red);
     g.setFont(20.0f);
     g.drawText("Main Component", getLocalBounds(), juce::Justification::centredTop);
 }

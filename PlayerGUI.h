@@ -1,11 +1,24 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PlayerAudio.h"
+#include<string>
+#include <vector>
 
-class PlayerGUI : public juce::Component,
-    public juce::Button::Listener,
-    public juce::Slider::Listener
+struct TrackMetadata
 {
+    juce::String title;
+    juce::String artist;
+    double duration = 0;
+    juce::File file;
+};
+
+class PlayerGUI : 
+    public juce::Component,
+    public juce::Button::Listener,
+    public juce::Slider::Listener,
+    public juce::ListBoxModel
+{
+
 public:
     PlayerGUI();
     ~PlayerGUI() override;
@@ -17,9 +30,18 @@ public:
     void paint(juce::Graphics& g) override;
     void resized() override;
 
+   
+    int PlayerGUI::getNumRows() override;
+    void PlayerGUI::paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override;
+    //void PlayerGUI::listBoxItemClicked(int row, const juce::MouseEvent&) override;
+
+    void PlayerGUI::mouseDown(const juce::MouseEvent& event) override;
 private:
     PlayerAudio playerAudio;
 
+    juce::ListBox trackList;
+    std::vector<TrackMetadata> playlist;
+    int currentIndex = 0;
 
     // GUI Elements
     juce::TextButton loadButton{ "Load File" };
@@ -30,6 +52,9 @@ private:
     juce::TextButton goToStart{ "Go to Start" };
     juce::TextButton loopButton{ "Single" };
     juce::TextButton muteButton{ "Mute" };
+    juce::TextButton addButton{ "Add" };
+    juce::TextButton nextButton{ "Next" };
+    juce::TextButton prevButoon{ "Prev" };
 
     bool isMuted = false;
     float previousVolume = 0.5f;
@@ -42,6 +67,5 @@ private:
     // Event handlers
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerGUI)
 };
