@@ -113,9 +113,12 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                 {
                     metadataLabel.setText("No file loaded", juce::dontSendNotification);
                 }
-                playlist.clear();
-                trackList.updateContent();
-                trackList.repaint();
+                if(!playlist.empty())
+                {
+                    playlist.clear();
+                    trackList.updateContent();
+                    trackList.repaint();
+                }
             });
 
     }
@@ -340,42 +343,6 @@ void PlayerGUI::paintListBoxItem(int row, juce::Graphics& g, int width, int heig
    
     
 }
-
-//void PlayerGUI::listBoxItemClicked(int row, const juce::MouseEvent& )
-//{
-//    playerAudio.loadFile(playlist[row].file);
-//   
-//    if (currentIndex != row)
-//    {
-//        currentIndex = row;
-//        isPlaying = !isPlaying;
-//
-//        playerAudio.play(isPlaying);
-//        playButton.setButtonText(isPlaying ? "Pause" : "Play");
-//    }
-//
-//    if(!isPlaying)
-//    {
-//        isPlaying = !isPlaying;
-//        playerAudio.play(isPlaying);
-//        playButton.setButtonText(isPlaying ? "Pause" : "Play");
-//    }
-//    else if (isPlaying)
-//    {
-//        isPlaying = !isPlaying;
-//        playerAudio.play(isPlaying);
-//        playButton.setButtonText(isPlaying ? "Pause" : "Play");
-//
-//    }
-//
-//    metadataLabel.setText("Title: " + playlist[currentIndex].title +
-//        " | Artist: " + playlist[currentIndex].artist +
-//        " | Duration: " + juce::String(playlist[currentIndex].duration / 60.0, 2) + "min",
-//        juce::dontSendNotification);
-//
-//
-//
-//}
 
 void PlayerGUI::mouseDown(const juce::MouseEvent& event)
 {   

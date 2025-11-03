@@ -33,7 +33,6 @@ public:
    
     int PlayerGUI::getNumRows() override;
     void PlayerGUI::paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override;
-    //void PlayerGUI::listBoxItemClicked(int row, const juce::MouseEvent&) override;
 
     void PlayerGUI::mouseDown(const juce::MouseEvent& event) override;
 private:
