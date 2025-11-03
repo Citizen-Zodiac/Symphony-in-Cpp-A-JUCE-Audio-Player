@@ -35,6 +35,7 @@ public:
     juce::String getArtist() const { return artist; }
     double getDuration() const { return duration; }
     void setPlaybackSpeed(double speed);
+
     juce::AudioFormatManager& getFormatManager() { return formatManager; }
     double getCurrentPosition() const { return transportSource.getCurrentPosition(); }
     double getLengthInSeconds() const
@@ -43,7 +44,6 @@ public:
     }
     juce::AudioTransportSource& getTransport() { return transportSource; }
 
-    
 private:
     juce::AudioFormatManager formatManager;
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
@@ -54,6 +54,9 @@ private:
     double loopPointA = -1.0;
     double loopPointB = -1.0;
     bool abLoopEnabled = false;
+    juce::ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
+    double playbackSpeed = 1.0;
+
 
 
 

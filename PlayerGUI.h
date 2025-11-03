@@ -81,9 +81,9 @@ private:
     // Event handlers
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
-
     juce::Slider speedSlider;
     juce::Label speedLabel;
+
 
     juce::AudioThumbnailCache thumbnailCache{ 10 };
     juce::AudioThumbnail thumbnail{ 1000, playerAudio.getFormatManager(), thumbnailCache };
