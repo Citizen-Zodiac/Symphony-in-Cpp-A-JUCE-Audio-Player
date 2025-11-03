@@ -2,9 +2,11 @@
 #include <JuceHeader.h>
 #include "PlayerAudio.h"
 
-class PlayerGUI : public juce::Component,
+class PlayerGUI :
+    public juce::Component,
     public juce::Button::Listener,
-    public juce::Slider::Listener
+    public juce::Slider::Listener,
+    public juce::Timer
 {
 public:
     PlayerGUI();
@@ -16,11 +18,11 @@ public:
 
     void paint(juce::Graphics& g) override;
     void resized() override;
+    void timerCallback()override;
+
 
 private:
     PlayerAudio playerAudio;
-
-
 
     // GUI Elements
     juce::TextButton loadButton{ "Load File" };
@@ -29,17 +31,27 @@ private:
     juce::TextButton playButton{ "Play" };
     juce::TextButton goToEnd{ "Go to End" };
     juce::TextButton goToStart{ "Go to Start" };
-    juce::TextButton muteButton{ "mute" };
-
-    juce::Slider volumeSlider;
-
-    std::unique_ptr<juce::FileChooser> fileChooser;
+    juce::TextButton loopButton{ "Single" };
+    juce::TextButton muteButton{ "Mute" };
 
     bool isMuted = false;
     float previousVolume = 0.5f;
+
+    juce::Slider volumeSlider;
+    juce::Slider positionSlider;
+    juce::Label currentTimeLabel;
+    juce::Label totalTimeLabel;
+    //Time Helper Function
+    juce::String formatTime(double seconds);
+
+    std::unique_ptr<juce::FileChooser> fileChooser;
+
+    juce::Label metadataLabel;
     // Event handlers
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
+    juce::Slider speedSlider;
+    juce::Label speedLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerGUI)
 };

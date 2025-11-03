@@ -15,8 +15,9 @@ public:
     void restart();
     void stop();
 
-    void play();
-    void pause();
+    void setLooping(bool shouldloop);
+    void play(bool ch);
+
     void goToStart();
     void goToEnd();
 
@@ -25,10 +26,24 @@ public:
     double getPosition() const;
     double getLength() const;
 
+    juce::String getTitle() const { return title; }
+    juce::String getArtist() const { return artist; }
+    double getDuration() const { return duration; }
+    void setPlaybackSpeed(double speed);
+
+
 private:
     juce::AudioFormatManager formatManager;
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
     juce::AudioTransportSource transportSource;
+    juce::String title;
+    juce::String artist;
+    double duration = 0.0;
+    juce::ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
+    double playbackSpeed = 1.0;
+
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerAudio)
 };
