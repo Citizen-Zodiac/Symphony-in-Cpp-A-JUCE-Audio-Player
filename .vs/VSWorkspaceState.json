@@ -1,7 +1,13 @@
 {
   "ExpandedNodes": [
+<<<<<<< Updated upstream
     ""
   ],
   "SelectedNode": "\\PlayerGUI.h",
+=======
+    "",
+    "\\AudioPlayer"
+  ],
+>>>>>>> Stashed changes
   "PreviewInSolutionExplorer": false
 }
