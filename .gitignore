@@ -1,4 +1,6 @@
 # JUCE SPECIFIC
+AudioPlayer/
+Source/
 Builds/
 JuceLibraryCode/
 *.vcxproj*

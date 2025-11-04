@@ -143,7 +143,7 @@ void PlayerAudio::checkAndHandleLooping()
     {
         double currentPos = getPosition();
 
-
+        
         if (currentPos >= loopPointB)
         {
             transportSource.setPosition(loopPointA);
