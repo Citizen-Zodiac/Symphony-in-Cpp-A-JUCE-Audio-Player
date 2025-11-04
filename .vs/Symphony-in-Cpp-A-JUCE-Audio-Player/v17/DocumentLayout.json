@@ -2,6 +2,7 @@
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\LOQ\\Documents\\GitHub\\Symphony-in-Cpp-A-JUCE-Audio-Player\\",
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   "Documents": [
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LOQ\\Documents\\GitHub\\Symphony-in-Cpp-A-JUCE-Audio-Player\\PlayerGUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -28,17 +29,25 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MainComponent.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+=======
+  "Documents": [
+    {
+>>>>>>> Stashed changes
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LOQ\\Documents\\GitHub\\Symphony-in-Cpp-A-JUCE-Audio-Player\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
+<<<<<<< Updated upstream
 =======
   "Documents": [],
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "DocumentGroups": [
         {
@@ -48,11 +57,22 @@
             {
               "$type": "Document",
               "DocumentIndex": 6,
+=======
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+>>>>>>> Stashed changes
               "Title": "Main.cpp",
               "DocumentMoniker": "C:\\Users\\LOQ\\Documents\\GitHub\\Symphony-in-Cpp-A-JUCE-Audio-Player\\Main.cpp",
               "RelativeDocumentMoniker": "Main.cpp",
               "ToolTip": "C:\\Users\\LOQ\\Documents\\GitHub\\Symphony-in-Cpp-A-JUCE-Audio-Player\\Main.cpp",
               "RelativeToolTip": "Main.cpp",
+<<<<<<< Updated upstream
               "ViewState": "AgIAACAAAAAAAAAAAAAIwDEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-10-22T00:59:36.889Z",
@@ -134,13 +154,21 @@
               "ViewState": "AgIAAEsBAAAAAAAAAAAIwFABAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-10-22T00:54:06.882Z",
+=======
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-04T12:31:32.136Z",
+>>>>>>> Stashed changes
               "EditorCaption": ""
             }
           ]
         }
       ]
+<<<<<<< Updated upstream
 =======
       "DocumentGroups": []
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
   ]
