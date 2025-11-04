@@ -16,7 +16,9 @@ class PlayerGUI :
     public juce::Button::Listener,
     public juce::Slider::Listener,
     public juce::Timer,
-    public juce::TableListBoxModel
+    public juce::TableListBoxModel,
+    public juce::ChangeListener
+
 {
 
 public:
@@ -31,14 +33,12 @@ public:
     void resized() override;
     void timerCallback()override;
     bool keyPressed(const juce::KeyPress& key) override;
-    
-
-
    
     int PlayerGUI::getNumRows() override;
     void PlayerGUI::paintRowBackground( juce::Graphics& g,int row, int width, int height, bool selected) override;
     void PlayerGUI::paintCell(juce::Graphics& g, int row, int col, int width, int height, bool selected) override;
     void PlayerGUI::setCurrentlyPlayingRow(int row);
+
 private:
     
     PlayerAudio playerAudio;
@@ -81,5 +81,24 @@ private:
     // Event handlers
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
+
+    juce::Slider speedSlider;
+    juce::Label speedLabel;
+
+    juce::AudioThumbnailCache thumbnailCache{ 10 };
+    juce::AudioThumbnail thumbnail{ 1000, playerAudio.getFormatManager(), thumbnailCache };
+
+    bool fileLoaded = false;
+    double waveformPosition = 0.0;
+    void changeListenerCallback(juce::ChangeBroadcaster* source) override;
+    int waveformTop = 0;
+    int waveformHeight = 0;
+    int waveformX = 0;
+    int waveformWidth = 0;
+
+
+
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerGUI)
 };

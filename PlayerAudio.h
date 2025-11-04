@@ -34,6 +34,14 @@ public:
     juce::String getTitle() const { return title; }
     juce::String getArtist() const { return artist; }
     double getDuration() const { return duration; }
+    void setPlaybackSpeed(double speed);
+    juce::AudioFormatManager& getFormatManager() { return formatManager; }
+    double getCurrentPosition() const { return transportSource.getCurrentPosition(); }
+    double getLengthInSeconds() const
+    {
+        return transportSource.getLengthInSeconds();
+    }
+    juce::AudioTransportSource& getTransport() { return transportSource; }
 
     
 private:
@@ -46,6 +54,7 @@ private:
     double loopPointA = -1.0;
     double loopPointB = -1.0;
     bool abLoopEnabled = false;
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerAudio)
