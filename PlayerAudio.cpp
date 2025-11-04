@@ -14,17 +14,17 @@ PlayerAudio::~PlayerAudio()
 
 void PlayerAudio::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void PlayerAudio::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    resampleSource.getNextAudioBlock(bufferToFill);
+    transportSource.getNextAudioBlock(bufferToFill);
 }
 
 void PlayerAudio::releaseResources()
 {
-    resampleSource.releaseResources();
+    transportSource.releaseResources();
 }
 
 bool PlayerAudio::loadFile(const juce::File& file)
@@ -37,7 +37,6 @@ bool PlayerAudio::loadFile(const juce::File& file)
         transportSource.stop();
         transportSource.setSource(nullptr);
         readerSource.reset();
-
         // Create new reader source
         readerSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         transportSource.setSource(readerSource.get(), 0, nullptr, reader->sampleRate);
@@ -98,12 +97,6 @@ void PlayerAudio::setLooping(bool shouldloop)
         readerSource->setLooping(shouldloop);
 }
 
-void PlayerAudio::setPlaybackSpeed(double speed)
-{
-    playbackSpeed = juce::jlimit(0.5, 2.0, speed);
-    resampleSource.setResamplingRatio(playbackSpeed);
-}
-
 
 void PlayerAudio::setGain(float gain)
 {
@@ -125,3 +118,35 @@ double PlayerAudio::getLength() const
     return transportSource.getLengthInSeconds();
 }
 
+void PlayerAudio::setALoopPoint(double time)
+{
+    loopPointA = time;
+    abLoopEnabled = (loopPointA >= 0 && loopPointB >= 0);
+}
+
+void PlayerAudio::setBLoopPoint(double time)
+{
+    loopPointB = time;
+    abLoopEnabled = (loopPointA >= 0 && loopPointB >= 0);
+}
+
+void PlayerAudio::clearLoopPoints()
+{
+    loopPointA = -1.0;
+    loopPointB = -1.0;
+    abLoopEnabled = false;
+}
+
+void PlayerAudio::checkAndHandleLooping()
+{
+    if (abLoopEnabled && readerSource != nullptr)
+    {
+        double currentPos = getPosition();
+
+
+        if (currentPos >= loopPointB)
+        {
+            transportSource.setPosition(loopPointA);
+        }
+    }
+}
