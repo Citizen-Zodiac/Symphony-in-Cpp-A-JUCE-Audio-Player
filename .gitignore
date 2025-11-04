@@ -1,9 +1,7 @@
 # JUCE SPECIFIC
+*.jucer
 Builds/
 JuceLibraryCode/
-*.vcxproj*
-*.sln
-*.xcodeproj/
 
 # Prerequisites
 *.d
