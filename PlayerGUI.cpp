@@ -221,7 +221,10 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         playerAudio.restart();
         playButton.setButtonText("Pause");
         isPlaying = true;
-
+        loopPointA = -1.0;
+        loopPointB = -1.0;
+        playerAudio.clearLoopPoints();
+        repaint();
     }
 
     else if (button == &stopButton)
