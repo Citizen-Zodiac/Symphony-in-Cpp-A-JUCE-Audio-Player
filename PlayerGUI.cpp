@@ -28,12 +28,14 @@ PlayerGUI::PlayerGUI()
 
     // Start timer for position updates (every 30ms)
     startTimer(30);
+    startTimerHz(60);
 
     // Label style
     metadataLabel.setJustificationType(juce::Justification::centred);
     metadataLabel.setText("No file loaded", juce::dontSendNotification);
     metadataLabel.setColour(juce::Label::textColourId, juce::Colours::white);
-    metadataLabel.setFont(juce::Font(16.0f, juce::Font::plain));
+    metadataLabel.setFont(juce::FontOptions().withHeight(16.0f));
+
 
     // background color
     setOpaque(true);
@@ -61,6 +63,10 @@ PlayerGUI::PlayerGUI()
     speedLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(speedLabel);
 
+    // Wave Setup
+    thumbnail.addChangeListener(this);
+
+
 }
 
 PlayerGUI::~PlayerGUI() {}
@@ -83,7 +89,32 @@ void PlayerGUI::releaseResources()
 
 void PlayerGUI::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::darkgrey);
+    g.fillAll(juce::Colours::black);
+    auto waveformArea = juce::Rectangle<int>(waveformX, waveformTop, waveformWidth, waveformHeight);
+    g.setColour(juce::Colours::darkgrey);
+    g.fillRect(waveformArea);
+
+    if (thumbnail.getTotalLength() > 0.0)
+    {
+        g.setColour(juce::Colours::lightblue);
+
+        double totalLen = playerAudio.getTransport().getLengthInSeconds();
+        double curPos = playerAudio.getTransport().getCurrentPosition();
+        double relativePos = (totalLen > 0.0) ? curPos / totalLen : 0.0;
+
+        thumbnail.drawChannel(g, waveformArea, 0.0, totalLen, 0, 1.0f);
+
+        g.setColour(juce::Colours::red);
+        int playheadX = waveformArea.getX() + static_cast<int>(relativePos * waveformArea.getWidth());
+        g.drawLine((float)playheadX, (float)waveformArea.getY(),
+            (float)playheadX, (float)waveformArea.getBottom(), 2.0f);
+    }
+    else
+    {
+        g.setColour(juce::Colours::grey);
+        g.setFont(14.0f);
+        g.drawText("No file loaded", waveformArea, juce::Justification::centred, true);
+    }
 }
 
 void PlayerGUI::resized()
@@ -101,17 +132,22 @@ void PlayerGUI::resized()
     goToEnd.setBounds(510, y, 100, buttonHeight);
     loopButton.setBounds(620, y, buttonWidth, buttonHeight);
     muteButton.setBounds(710, y, 70, buttonHeight);
-    metadataLabel.setBounds(20, 70, getWidth() - 40, 20);
-    volumeSlider.setBounds(100, 100, getWidth() - 120, sliderHeight);
-    speedLabel.setBounds(0, 130, getWidth(), 20);
-    speedSlider.setBounds(getWidth() / 2 - 150, 155, 300, 20);
 
+    metadataLabel.setBounds(20, 80, getWidth() - 40, 20);
+    volumeSlider.setBounds(100, 110, getWidth() - 120, sliderHeight);
+    speedLabel.setBounds(0, 145, getWidth(), 20);
+    speedSlider.setBounds(getWidth() / 2 - 150, 165, 300, 20);
 
-    int sliderY = 170;
+    int sliderY = 260;
     currentTimeLabel.setBounds(10, sliderY, 50, 25);
     positionSlider.setBounds(70, sliderY, getWidth() - 140, 25);
     totalTimeLabel.setBounds(getWidth() - 60, sliderY, 50, 25);
 
+    waveformTop = 200;
+    waveformHeight = 45;
+
+    waveformX = positionSlider.getX();
+    waveformWidth = positionSlider.getWidth();
 }
 
 void PlayerGUI::buttonClicked(juce::Button* button)
@@ -138,6 +174,8 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                 if (file.existsAsFile())
                 {
                     playerAudio.loadFile(file);
+                    thumbnail.setSource(new juce::FileInputSource(file));
+                    fileLoaded = true;
 
                     metadataLabel.setText("Title: " + playerAudio.getTitle() +
                         " | Artist: " + playerAudio.getArtist() +
@@ -278,8 +316,22 @@ void PlayerGUI::timerCallback()
 
     if (length > 0.0 && currentPos > 0.0)
     {
+        double relativePos = 0.0;
+        double totalLen = playerAudio.getLength();
+        double curPos = playerAudio.getPosition();
+
+        if (totalLen > 0.0)
+            relativePos = curPos / totalLen;
+
+        waveformPosition = relativePos;
         positionSlider.setValue(currentPos / length, juce::dontSendNotification);
         currentTimeLabel.setText(formatTime(currentPos), juce::dontSendNotification);
         totalTimeLabel.setText(formatTime(length), juce::dontSendNotification);
     }
+    repaint();
+}
+
+void PlayerGUI::changeListenerCallback(juce::ChangeBroadcaster* source)
+{
+    repaint();
 }

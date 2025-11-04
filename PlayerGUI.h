@@ -6,7 +6,8 @@ class PlayerGUI :
     public juce::Component,
     public juce::Button::Listener,
     public juce::Slider::Listener,
-    public juce::Timer
+    public juce::Timer,
+    public juce::ChangeListener
 {
 public:
     PlayerGUI();
@@ -19,6 +20,7 @@ public:
     void paint(juce::Graphics& g) override;
     void resized() override;
     void timerCallback()override;
+
 
 
 private:
@@ -52,6 +54,21 @@ private:
     void sliderValueChanged(juce::Slider* slider) override;
     juce::Slider speedSlider;
     juce::Label speedLabel;
+
+    juce::AudioThumbnailCache thumbnailCache{ 10 };
+    juce::AudioThumbnail thumbnail{ 1000, playerAudio.getFormatManager(), thumbnailCache };
+
+    bool fileLoaded = false;
+    double waveformPosition = 0.0;
+    void changeListenerCallback(juce::ChangeBroadcaster* source) override;
+    int waveformTop = 0;
+    int waveformHeight = 0;
+    int waveformX = 0;
+    int waveformWidth = 0;
+
+
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerGUI)
 };
