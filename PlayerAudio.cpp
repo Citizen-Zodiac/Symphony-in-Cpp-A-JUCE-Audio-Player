@@ -14,17 +14,17 @@ PlayerAudio::~PlayerAudio()
 
 void PlayerAudio::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void PlayerAudio::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    transportSource.getNextAudioBlock(bufferToFill);
+    resampleSource.getNextAudioBlock(bufferToFill);
 }
 
 void PlayerAudio::releaseResources()
 {
-    transportSource.releaseResources();
+    resampleSource.releaseResources();
 }
 
 bool PlayerAudio::loadFile(const juce::File& file)
@@ -96,7 +96,11 @@ void PlayerAudio::setLooping(bool shouldloop)
     if (readerSource != nullptr)
         readerSource->setLooping(shouldloop);
 }
-
+void PlayerAudio::setPlaybackSpeed(double speed)
+{
+    playbackSpeed = juce::jlimit(0.5, 2.0, speed);
+    resampleSource.setResamplingRatio(playbackSpeed);
+}
 
 void PlayerAudio::setGain(float gain)
 {
