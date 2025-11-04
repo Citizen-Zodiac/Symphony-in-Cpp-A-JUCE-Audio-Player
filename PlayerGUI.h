@@ -83,6 +83,10 @@ private:
     void sliderValueChanged(juce::Slider* slider) override;
     juce::Slider speedSlider;
     juce::Label speedLabel;
+    juce::Label volumeLabel;
+
+    juce::Label directedBy;
+    juce::Label ourNames;
 
 
     juce::AudioThumbnailCache thumbnailCache{ 10 };
