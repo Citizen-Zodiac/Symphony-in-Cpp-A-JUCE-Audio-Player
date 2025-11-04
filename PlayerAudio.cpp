@@ -37,7 +37,6 @@ bool PlayerAudio::loadFile(const juce::File& file)
         transportSource.stop();
         transportSource.setSource(nullptr);
         readerSource.reset();
-
         // Create new reader source
         readerSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         transportSource.setSource(readerSource.get(), 0, nullptr, reader->sampleRate);
@@ -118,6 +117,7 @@ double PlayerAudio::getLength() const
 {
     return transportSource.getLengthInSeconds();
 }
+
 void PlayerAudio::setALoopPoint(double time)
 {
     loopPointA = time;

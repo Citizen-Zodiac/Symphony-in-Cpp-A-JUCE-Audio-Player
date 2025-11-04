@@ -1,13 +1,24 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PlayerAudio.h"
+#include<string>
+#include <vector>
+struct TrackMetadata
+{
+    juce::String title;
+    juce::String artist;
+    double length = 0.0;
+    juce::File file;
+};
 
 class PlayerGUI :
     public juce::Component,
     public juce::Button::Listener,
     public juce::Slider::Listener,
-    public juce::Timer
+    public juce::Timer,
+    public juce::TableListBoxModel
 {
+
 public:
     PlayerGUI();
     ~PlayerGUI() override;
@@ -23,9 +34,17 @@ public:
     
 
 
+   
+    int PlayerGUI::getNumRows() override;
+    void PlayerGUI::paintRowBackground( juce::Graphics& g,int row, int width, int height, bool selected) override;
+    void PlayerGUI::paintCell(juce::Graphics& g, int row, int col, int width, int height, bool selected) override;
+    void PlayerGUI::setCurrentlyPlayingRow(int row);
 private:
+    
     PlayerAudio playerAudio;
-
+    juce::TableListBox trackList;
+    std::vector<TrackMetadata> playlist;
+    int currentIndex = 0;
     double loopPointA = -1.0;      
     double loopPointB = -1.0;       
     void updateABLoopPoints();
@@ -40,6 +59,10 @@ private:
     juce::TextButton goToStart{ "Go to Start" };
     juce::TextButton loopButton{ "Single" };
     juce::TextButton muteButton{ "Mute" };
+    juce::TextButton addButton{ "Add" };
+    juce::TextButton nextButton{ "Next" };
+    juce::TextButton prevButoon{ "Prev" };
+    juce::TextButton removePlButton{ "Remove PL" };
     juce::TextButton clearABButton{ "Clear A-B" };
 
     bool isMuted = false;
@@ -58,6 +81,5 @@ private:
     // Event handlers
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerGUI)
 };
