@@ -93,17 +93,17 @@ PlayerGUI::PlayerGUI()
     addAndMakeVisible(speedLabel);
 
     // Directed By
-    directedBy.setText("Directed by", juce::dontSendNotification);
-    directedBy.setJustificationType(juce::Justification::centred);
-    directedBy.setFont(juce::Font(18.0f, juce::Font::bold | juce::Font::italic));
-    directedBy.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
+    developedBy.setText("Developed by", juce::dontSendNotification);
+    developedBy.setJustificationType(juce::Justification::centred);
+    developedBy.setFont(juce::Font(18.0f, juce::Font::bold | juce::Font::italic));
+    developedBy.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
 
     ourNames.setText("Mohamed Ebrahim    |    Mustafa Mahmoud    |    Hamza Mohamed", juce::dontSendNotification);
     ourNames.setJustificationType(juce::Justification::centred);
     ourNames.setFont(juce::Font(18.0f, juce::Font::bold));
     ourNames.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
 
-    addAndMakeVisible(directedBy);
+    addAndMakeVisible(developedBy);
     addAndMakeVisible(ourNames);
     
 }
@@ -234,7 +234,7 @@ void PlayerGUI::resized()
 
     // Directed By
     int height = 40;
-    directedBy.setBounds(getWidth() / 2 - (100), 40, 100, 100);
+    developedBy.setBounds(getWidth() / 2 - (100), 40, 100, 100);
     ourNames.setBounds(getWidth() / 2-(350), 80, 600, 100);
 }
 

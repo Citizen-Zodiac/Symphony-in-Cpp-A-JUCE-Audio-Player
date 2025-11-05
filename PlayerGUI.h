@@ -62,7 +62,7 @@ private:
     juce::TextButton addButton{ "Add" };
     juce::TextButton nextButton{ "Next" };
     juce::TextButton prevButoon{ "Prev" };
-    juce::TextButton removePlButton{ "Remove PL" };
+    juce::TextButton removePlButton{ "Remove Pl" };
     juce::TextButton clearABButton{ "Clear A-B" };
 
     bool isMuted = false;
@@ -85,7 +85,7 @@ private:
     juce::Label speedLabel;
     juce::Label volumeLabel;
 
-    juce::Label directedBy;
+    juce::Label developedBy;
     juce::Label ourNames;
 
 
