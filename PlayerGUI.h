@@ -66,6 +66,7 @@ private:
     juce::TextButton clearABButton{ "Clear A-B" };
 
     bool isMuted = false;
+    bool isPlaying = false;  
     float previousVolume = 0.5f;
 
     juce::Slider volumeSlider;

@@ -98,7 +98,7 @@ PlayerGUI::PlayerGUI()
     developedBy.setFont(juce::Font(18.0f, juce::Font::bold | juce::Font::italic));
     developedBy.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
 
-    ourNames.setText("Mohamed Ebrahim    |    Mustafa Mahmoud    |    Hamza Mohamed", juce::dontSendNotification);
+    ourNames.setText("Mohamed Ibrahim    |    Mustafa Mahmoud    |    Hamza Mohamed", juce::dontSendNotification);
     ourNames.setJustificationType(juce::Justification::centred);
     ourNames.setFont(juce::Font(18.0f, juce::Font::bold));
     ourNames.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
@@ -238,7 +238,6 @@ void PlayerGUI::resized()
     ourNames.setBounds(getWidth() / 2-(350), 80, 600, 100);
 }
 
-static bool isPlaying = false;
 void PlayerGUI::buttonClicked(juce::Button* button)
 {
     static bool checkRemovePl = true;
@@ -292,7 +291,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
 
     else if (button == &restartButton)
     {
-        // Restart playback
+       
         playerAudio.restart();
         playButton.setButtonText("Pause");
         isPlaying = true;
@@ -304,7 +303,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
 
     else if (button == &stopButton)
     {
-        // Stop playback and reset position
+    
         playerAudio.stop();
         playerAudio.setPosition(0.0);
         playButton.setButtonText("Play");
@@ -318,7 +317,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         {
             
             playerAudio.loadFile(playlist[currentIndex].file);
-             // Start & Pause playback
+             
             isPlaying = !isPlaying;
             playerAudio.play(isPlaying);
 
@@ -326,7 +325,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                 " | Artist: " + playlist[currentIndex].artist,
                 juce::dontSendNotification);
 
-            // Change button text
+           
             playButton.setButtonText(isPlaying ? "Pause" : "Play");
 
         }
@@ -352,7 +351,6 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     }
     else if (button == &goToEnd)
     {
-        // Go to end of the track
         playerAudio.goToEnd();
         if (isPlaying)
         {
@@ -371,17 +369,13 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     }
     else if (button == &goToStart)
     {
-        // Go to start of the track
         playerAudio.goToStart();
     }
 
     else if (button == &loopButton)
     {
-        // Toggle looping
         isLooping = !isLooping;
         playerAudio.setLooping(isLooping);
-
-        // Change button text to show state
         loopButton.setButtonText(isLooping ? "Loop" : "Single");
     }
 
@@ -588,6 +582,7 @@ void PlayerGUI::timerCallback()
             positionSlider.setValue(currentPos / length, juce::dontSendNotification);
             currentTimeLabel.setText(formatTime(currentPos), juce::dontSendNotification);
             totalTimeLabel.setText(formatTime(length), juce::dontSendNotification);
+            playerAudio.checkAndHandleLooping();
         }
         repaint();
 
@@ -640,10 +635,17 @@ bool PlayerGUI::keyPressed(const juce::KeyPress& key)
 {
     double currentPos = playerAudio.getPosition();
 
-    
     DBG("Key pressed: " << key.getKeyCode() << " Character: " << key.getTextCharacter());
 
-    if (key.getKeyCode() == 65 || key.getKeyCode() == 97) 
+    if (key.getKeyCode() == juce::KeyPress::spaceKey)
+    {
+      
+        isPlaying = !isPlaying;
+        playerAudio.play(isPlaying);
+        playButton.setButtonText(isPlaying ? "Pause" : "Play");
+        return true;
+    }
+    else if (key.getKeyCode() == 65 || key.getKeyCode() == 97)
     {
         loopPointA = currentPos;
         updateABLoopPoints();
@@ -651,9 +653,8 @@ bool PlayerGUI::keyPressed(const juce::KeyPress& key)
         DBG("A point set at: " << currentPos);
         return true;
     }
-    else if (key.getKeyCode() == 66 || key.getKeyCode() == 98) 
+    else if (key.getKeyCode() == 66 || key.getKeyCode() == 98)
     {
-    
         loopPointB = currentPos;
         updateABLoopPoints();
         repaint();
@@ -663,6 +664,7 @@ bool PlayerGUI::keyPressed(const juce::KeyPress& key)
 
     return false;
 }
+
 void PlayerGUI::updateABLoopPoints()
 {
 
