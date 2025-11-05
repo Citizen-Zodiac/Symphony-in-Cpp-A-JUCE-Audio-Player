@@ -571,6 +571,7 @@ void PlayerGUI::timerCallback()
         double length = playerAudio.getLength();
         double currentPos = playerAudio.getPosition();
 
+
         if (length > 0.0 && currentPos > 0.0)
         {
             double relativePos = 0.0;
@@ -586,6 +587,7 @@ void PlayerGUI::timerCallback()
             totalTimeLabel.setText(formatTime(length), juce::dontSendNotification);
         }
         repaint();
+
 }
 
 int PlayerGUI::getNumRows()
@@ -635,10 +637,10 @@ bool PlayerGUI::keyPressed(const juce::KeyPress& key)
 {
     double currentPos = playerAudio.getPosition();
 
-
+    
     DBG("Key pressed: " << key.getKeyCode() << " Character: " << key.getTextCharacter());
 
-    if (key.getKeyCode() == 65 || key.getKeyCode() == 97)
+    if (key.getKeyCode() == 65 || key.getKeyCode() == 97) 
     {
         loopPointA = currentPos;
         updateABLoopPoints();
@@ -646,9 +648,9 @@ bool PlayerGUI::keyPressed(const juce::KeyPress& key)
         DBG("A point set at: " << currentPos);
         return true;
     }
-    else if (key.getKeyCode() == 66 || key.getKeyCode() == 98)
+    else if (key.getKeyCode() == 66 || key.getKeyCode() == 98) 
     {
-
+    
         loopPointB = currentPos;
         updateABLoopPoints();
         repaint();
