@@ -237,10 +237,10 @@ void PlayerGUI::resized()
     developedBy.setBounds(getWidth() / 2 - (100), 40, 100, 100);
     ourNames.setBounds(getWidth() / 2-(350), 80, 600, 100);
 }
-
+static bool isPlaying = false;
+static bool checkRemovePl = true;
 void PlayerGUI::buttonClicked(juce::Button* button)
 {
-    static bool checkRemovePl = true;
     static bool isLooping = false;
     
     if (button == &loadButton)
@@ -310,23 +310,28 @@ void PlayerGUI::buttonClicked(juce::Button* button)
         isPlaying = false;        
 
     }
+
     else if (button == &playButton)
     {
         
         if (!playlist.empty())
-        {
-            
+        { 
+
+			double pos = playerAudio.getPosition();
             playerAudio.loadFile(playlist[currentIndex].file);
              
             isPlaying = !isPlaying;
+			playerAudio.setPosition(pos);
             playerAudio.play(isPlaying);
+            playButton.setButtonText(isPlaying ? "Pause" : "Play");
 
             metadataLabel.setText("Title: " + playlist[currentIndex].title +
                 " | Artist: " + playlist[currentIndex].artist,
                 juce::dontSendNotification);
+            
+            fileLoaded = true;
+            thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
 
-           
-            playButton.setButtonText(isPlaying ? "Pause" : "Play");
 
         }
         
@@ -346,8 +351,6 @@ void PlayerGUI::buttonClicked(juce::Button* button)
             return;
         }
         
-        
-
     }
     else if (button == &goToEnd)
     {
@@ -399,8 +402,7 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     }
     else if (button == &addButton)
     {
-       
-        static  double pos;
+	    static  double pos;
         juce::FileChooser chooser("Select audio files...",
             juce::File{},
             "*.wav;*.mp3");
@@ -417,34 +419,54 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                 auto file = fc.getResult();
                 if (file.existsAsFile())
                 {
-
                     pos = playerAudio.getPosition();
                     playerAudio.loadFile(file);
-                    thumbnail.setSource(new juce::FileInputSource(file));
-                    fileLoaded = true;
-                }
+                   
 
+                    TrackMetadata track;
+                    track.title = playerAudio.getTitle();
+                    track.artist = playerAudio.getArtist();
+                    track.length = playerAudio.getLength() / 60;
+                    track.file = file;
+                    playlist.push_back(track);
+                    trackList.updateContent();
+
+                    if (isPlaying&&checkRemovePl)
+                    {
+                        playerAudio.loadFile(playlist[currentIndex].file);
+                        playerAudio.setPosition(pos);
+                        playerAudio.play(isPlaying);
+                        fileLoaded = true;
+                        thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
+                    }
+                    if (!isPlaying && playlist.size() > 1)
+                    {
+                        playerAudio.loadFile(playlist[currentIndex].file);
+                 
+                        fileLoaded = true;
+                        thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
+                    }
+                }
                 else
                 {
-                    metadataLabel.setText("No file loaded",juce::dontSendNotification);
+                    metadataLabel.setText("No file loaded", juce::dontSendNotification);
                 }
-                TrackMetadata track;
-                track.title = playerAudio.getTitle();
-                track.artist = playerAudio.getArtist();
-                track.length = playerAudio.getLength()/60 ;
-                track.file = file;
-                playlist.push_back(track);
-                trackList.updateContent();
-                 
-               if (isPlaying)
+
+                if (playlist.size() == 1)
                 {
-                    
-                   playerAudio.loadFile(playlist[currentIndex].file);
-                   playerAudio.setPosition(pos);
-                   playerAudio.play(isPlaying);
+
+                    playerAudio.loadFile(playlist[currentIndex].file);
+
+                    fileLoaded = true;
+                    thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
+                    metadataLabel.setText("Title: " + playlist[currentIndex].title +
+                        " | Artist: " + playlist[currentIndex].artist,
+                        juce::dontSendNotification);
+
                 }
                 
             });
+        checkRemovePl;
 
     }
     else if (button == &nextButton)
@@ -463,6 +485,8 @@ void PlayerGUI::buttonClicked(juce::Button* button)
             isPlaying = true;
             playerAudio.play(isPlaying);
             
+            fileLoaded = true;
+            thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
 
             metadataLabel.setText("Title: " + playlist[currentIndex].title +
                 " | Artist: " + playlist[currentIndex].artist,
@@ -486,6 +510,8 @@ void PlayerGUI::buttonClicked(juce::Button* button)
             isPlaying = true;
             playerAudio.play(isPlaying);
 
+            fileLoaded = true;
+            thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
 
             metadataLabel.setText("Title: " + playlist[currentIndex].title +
                 " | Artist: " + playlist[currentIndex].artist ,
@@ -515,7 +541,9 @@ void PlayerGUI::buttonClicked(juce::Button* button)
             }
             isPlaying = false;
             playButton.setButtonText("Play");
-            checkRemovePl = true;
+			metadataLabel.setText("No file loaded", juce::dontSendNotification);
+            fileLoaded = false;
+			thumbnail.setSource(nullptr);
         }
     }
 
@@ -640,12 +668,44 @@ bool PlayerGUI::keyPressed(const juce::KeyPress& key)
     if (key.getKeyCode() == juce::KeyPress::spaceKey)
     {
       
-        isPlaying = !isPlaying;
-        playerAudio.play(isPlaying);
-        playButton.setButtonText(isPlaying ? "Pause" : "Play");
-        return true;
+        if (!playlist.empty())
+        {
+
+            double pos = playerAudio.getPosition();
+            playerAudio.loadFile(playlist[currentIndex].file);
+
+            isPlaying = !isPlaying;
+            playerAudio.setPosition(pos);
+            playerAudio.play(isPlaying);
+            playButton.setButtonText(isPlaying ? "Pause" : "Play");
+
+            metadataLabel.setText("Title: " + playlist[currentIndex].title +
+                " | Artist: " + playlist[currentIndex].artist,
+                juce::dontSendNotification);
+
+            fileLoaded = true;
+            thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
+
+
+        }
+
+        else if (checkRemovePl == false && playlist.empty())
+        {
+            isPlaying = !isPlaying;
+            playerAudio.play(isPlaying);
+            playButton.setButtonText(isPlaying ? "Pause" : "Play");
+
+            metadataLabel.setText("Title: " + playerAudio.getTitle() +
+                " | Artist: " + playerAudio.getArtist(),
+                juce::dontSendNotification);
+        }
+        else if (checkRemovePl)
+        {
+            metadataLabel.setText("No file loaded", juce::dontSendNotification);
+           
+        }
     }
-    else if (key.getKeyCode() == 65 || key.getKeyCode() == 97)
+    if (key.getKeyCode() == 65 || key.getKeyCode() == 97)
     {
         loopPointA = currentPos;
         updateABLoopPoints();
