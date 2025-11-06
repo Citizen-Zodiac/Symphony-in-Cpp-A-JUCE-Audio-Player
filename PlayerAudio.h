@@ -56,7 +56,7 @@ private:
     bool abLoopEnabled = false;
     juce::ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
     double playbackSpeed = 1.0;
-
+    
 
 
 

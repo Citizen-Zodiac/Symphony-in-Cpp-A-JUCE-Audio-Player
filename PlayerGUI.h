@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <JuceHeader.h>
 #include "PlayerAudio.h"
 #include<string>
@@ -64,6 +64,14 @@ private:
     juce::TextButton prevButoon{ "Prev" };
     juce::TextButton removePlButton{ "Remove Pl" };
     juce::TextButton clearABButton{ "Clear A-B" };
+    juce::TextButton star1{ "1" }, star2{ "2" }, star3{ "3" }, star4{ "4" }, star5{ "5" };
+    std::unordered_map<juce::String, int> trackRatings;
+
+    void saveRatingsToFile();
+    void loadRatingsFromFile();
+    void updateRatingButton();
+    void setRating(int newRating);
+
 
     bool isMuted = false;
     bool isPlaying = false;  
@@ -82,6 +90,7 @@ private:
     // Event handlers
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
+
     juce::Slider speedSlider;
     juce::Label speedLabel;
     juce::Label volumeLabel;
@@ -100,7 +109,6 @@ private:
     int waveformHeight = 0;
     int waveformX = 0;
     int waveformWidth = 0;
-
 
 
 
