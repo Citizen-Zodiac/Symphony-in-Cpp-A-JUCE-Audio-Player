@@ -326,9 +326,8 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                     thumbnail.setSource(new juce::FileInputSource(file));
                     fileLoaded = true;
 
-                    metadataLabel.setText("Title: " + playerAudio.getTitle() +
-                        " | Artist: " + playerAudio.getArtist(),
-
+                    
+                    metadataLabel.setText("Title: " + playerAudio.getTitle() + " | Artist: " + playerAudio.getArtist(),
                         juce::dontSendNotification);
 
                     isPlaying = false;
