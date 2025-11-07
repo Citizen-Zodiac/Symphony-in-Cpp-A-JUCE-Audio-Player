@@ -5,13 +5,13 @@ PlayerGUI::PlayerGUI()
     setSize(800, 200);
     // Add buttons
     for (auto* btn : { &loadButton, &restartButton , &stopButton, &playButton, &goToEnd, &goToStart,
-        &muteButton, &loopButton, &addButton, &nextButton, &prevButoon, &removePlButton,&clearABButton })
+        &muteButton, &loopButton, &addButton, &nextButton, &prevButoon, &removePlButton,&clearABButton,& aButton,& bButton })
     {
         addAndMakeVisible(*btn);
 
         btn->addListener(this);
         btn->setColour(juce::TextButton::textColourOffId, juce::Colours::white);
-        btn->setColour(juce::TextButton::buttonColourId, juce::Colours::black);
+        btn->setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2d2d2d)); // Dark grey buttons
     }
     for (auto* btn : { &star1, &star2, &star3, &star4, &star5 })
     {
@@ -33,6 +33,13 @@ PlayerGUI::PlayerGUI()
     volumeLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(volumeLabel);
 
+        // Volume slider colors
+    volumeSlider.setColour(juce::Slider::trackColourId, juce::Colour(0xff1a75ff));
+    volumeSlider.setColour(juce::Slider::thumbColourId, juce::Colours::white);
+    volumeSlider.setColour(juce::Slider::backgroundColourId, juce::Colour(0xff404040));
+    volumeSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
+    volumeSlider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(0xff2d2d2d));
+
 
     // POSITION SLIDER SETUP
     positionSlider.setRange(0.0, 1.0, 0.001);
@@ -41,6 +48,11 @@ PlayerGUI::PlayerGUI()
     positionSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
     positionSlider.addListener(this);
     addAndMakeVisible(positionSlider);
+
+        // Position slider colors  
+    positionSlider.setColour(juce::Slider::trackColourId, juce::Colour(0xff1a75ff));
+    positionSlider.setColour(juce::Slider::thumbColourId, juce::Colours::white);
+    positionSlider.setColour(juce::Slider::backgroundColourId, juce::Colour(0xff404040));
 
     // Start timer for position updates (every 30ms)
     startTimer(30);
@@ -98,20 +110,18 @@ PlayerGUI::PlayerGUI()
     speedLabel.setText("S", juce::dontSendNotification);
     speedLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(speedLabel);
+          // Speed slider colors
+    speedSlider.setColour(juce::Slider::trackColourId, juce::Colour(0xff1a75ff));
+    speedSlider.setColour(juce::Slider::thumbColourId, juce::Colours::white);
+    speedSlider.setColour(juce::Slider::backgroundColourId, juce::Colour(0xff404040));
+    speedSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
+    speedSlider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(0xff2d2d2d));
 
-    // Directed By
-    developedBy.setText("Developed by", juce::dontSendNotification);
-    developedBy.setJustificationType(juce::Justification::centred);
-    developedBy.setFont(juce::Font(18.0f, juce::Font::bold | juce::Font::italic));
-    developedBy.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
-
-    ourNames.setText("Mohamed Ibrahim    |    Mustafa Mahmoud    |    Hamza Mohamed", juce::dontSendNotification);
-    ourNames.setJustificationType(juce::Justification::centred);
-    ourNames.setFont(juce::Font(18.0f, juce::Font::bold));
-    ourNames.setColour(juce::Label::textColourId, juce::Colour(0xff1a75ff));
-
-    addAndMakeVisible(developedBy);
-    addAndMakeVisible(ourNames);
+    //Rate
+    ratingLabel.setText("Rate", juce::dontSendNotification);
+    ratingLabel.setJustificationType(juce::Justification::centred);
+    ratingLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    addAndMakeVisible(ratingLabel);
 
     // LOAD RATINGS WHEN APP STARTS
     loadRatingsFromFile();
@@ -140,19 +150,21 @@ void PlayerGUI::releaseResources()
 
 void PlayerGUI::paint(juce::Graphics& g)
 {
-   
-    g.fillAll(juce::Colours::black);
+    // background
+    g.fillAll(juce::Colour(0xff1e1e1e));
+
     double length = playerAudio.getLength();
 
+    // Draw A/B 
     if (loopPointA >= 0 && length > 0)
     {
         double aRatio = loopPointA / length;
         int aX = positionSlider.getX() + (int)(aRatio * positionSlider.getWidth());
 
-        g.setColour(juce::Colours::red);
-        g.drawLine(aX, positionSlider.getY() - 10, aX, positionSlider.getY() + positionSlider.getHeight() + 10, 2.0f);
+        g.setColour(juce::Colours::red.withAlpha(0.8f));
+        g.drawLine(aX, positionSlider.getY() - 15, aX, positionSlider.getY() + positionSlider.getHeight() + 15, 3.0f);
         g.setColour(juce::Colours::white);
-        g.drawText("A", aX - 10, positionSlider.getY() - 25, 20, 20, juce::Justification::centred);
+        g.drawText("A", aX - 12, positionSlider.getY() - 30, 24, 20, juce::Justification::centred);
     }
 
     if (loopPointB >= 0 && length > 0)
@@ -160,19 +172,27 @@ void PlayerGUI::paint(juce::Graphics& g)
         double bRatio = loopPointB / length;
         int bX = positionSlider.getX() + (int)(bRatio * positionSlider.getWidth());
 
-        g.setColour(juce::Colours::green);
-        g.drawLine(bX, positionSlider.getY() - 10, bX, positionSlider.getY() + positionSlider.getHeight() + 10, 2.0f);
+        g.setColour(juce::Colours::green.withAlpha(0.8f));
+        g.drawLine(bX, positionSlider.getY() - 15, bX, positionSlider.getY() + positionSlider.getHeight() + 15, 3.0f);
         g.setColour(juce::Colours::white);
-        g.drawText("B", bX - 10, positionSlider.getY() - 25, 20, 20, juce::Justification::centred);
+        g.drawText("B", bX - 12, positionSlider.getY() - 30, 24, 20, juce::Justification::centred);
     }
-        
+
+    // Waveform
     auto waveformArea = juce::Rectangle<int>(waveformX, waveformTop, waveformWidth, waveformHeight);
-    g.setColour(juce::Colours::black);
+
+    // Waveform background
+    g.setGradientFill(juce::ColourGradient(juce::Colour(0xff252525), 0, waveformTop,
+        juce::Colour(0xff2a2a2a), 0, waveformTop + waveformHeight, false));
     g.fillRect(waveformArea);
-    
+
+    g.setColour(juce::Colour(0xff505050));
+    g.drawRect(waveformArea, 2);
+
     if (thumbnail.getTotalLength() > 0.0)
     {
-        g.setColour(juce::Colours::darkgrey.darker());
+        g.setGradientFill(juce::ColourGradient(juce::Colour(0xff1a75ff), 0, waveformTop,
+            juce::Colour(0xff0055cc), 0, waveformTop + waveformHeight, false));
 
         double totalLen = playerAudio.getTransport().getLengthInSeconds();
         double curPos = playerAudio.getTransport().getCurrentPosition();
@@ -180,12 +200,22 @@ void PlayerGUI::paint(juce::Graphics& g)
 
         thumbnail.drawChannel(g, waveformArea, 0.0, totalLen, 0, 1.0f);
 
-        g.setColour(juce::Colour(0xff1a75ff));
+        g.setColour(juce::Colours::red);
         int playheadX = waveformArea.getX() + static_cast<int>(relativePos * waveformArea.getWidth());
         g.drawLine((float)playheadX, (float)waveformArea.getY(),
-            (float)playheadX, (float)waveformArea.getBottom(), 2.0f);
+            (float)playheadX, (float)waveformArea.getBottom(), 3.0f);
+
+        // Playhead triangle
+        juce::Path playheadTriangle;
+        playheadTriangle.addTriangle(playheadX - 6, waveformArea.getY() - 8,
+            playheadX + 6, waveformArea.getY() - 8,
+            playheadX, waveformArea.getY() - 2);
+        g.fillPath(playheadTriangle);
     }
-    
+
+    g.setColour(juce::Colours::black.withAlpha(0.2f));
+    for (int x = waveformX; x < waveformX + waveformWidth; x += 50)
+        g.drawLine(x, waveformTop, x, waveformTop + waveformHeight, 0.5f);
 }
 
 void PlayerGUI::resized()
@@ -194,7 +224,6 @@ void PlayerGUI::resized()
     // Top
     loadButton.setBounds(area.removeFromTop(40).removeFromLeft(130));
     area.removeFromTop(5);
-    clearABButton.setBounds(area.removeFromTop(40).removeFromLeft(130));
 
 
     // Bottom
@@ -218,6 +247,7 @@ void PlayerGUI::resized()
     playButton.setBounds(bottomArea.removeFromLeft(normalButtonWidth).reduced(4));
     nextButton.setBounds(bottomArea.removeFromLeft(normalButtonWidth).reduced(4));
     muteButton.setBounds(bottomArea.removeFromLeft(smallButtonWidth + 10).reduced(4));
+    
 
     //Playlist
     auto rightArea = area.removeFromRight(300);
@@ -226,6 +256,15 @@ void PlayerGUI::resized()
     addButton.setBounds(rightArea.removeFromTop(40).reduced(100, 0).translated(-60, 0));
     auto removeButtonArea = addButton.getBounds().translated(addButton.getWidth() + 10, 0);
     removePlButton.setBounds(removeButtonArea);
+
+    rightArea.removeFromTop(40); 
+
+    auto abArea = rightArea.removeFromTop(120); // Height for 3 vertical buttons
+    int abButtonHeight = 35; // CHANGE VARIABLE NAME
+
+    aButton.setBounds(abArea.removeFromTop(abButtonHeight).reduced(5));
+    bButton.setBounds(abArea.removeFromTop(abButtonHeight).reduced(5));
+    clearABButton.setBounds(abArea.removeFromTop(abButtonHeight).reduced(5));
 
     // Middle
     auto h = getHeight() / 1.2;
@@ -243,9 +282,11 @@ void PlayerGUI::resized()
     waveformWidth = positionSlider.getWidth()+50; // width
 
     // STAR RATING 
+
     int ratingWidth = waveformWidth / 2;  
     int ratingX = waveformX + (waveformWidth - ratingWidth) / 2; 
     int ratingY = waveformTop + waveformHeight + 40;  
+    ratingLabel.setBounds(ratingX, ratingY - 25, ratingWidth, 20);
 
     auto ratingArea = juce::Rectangle<int>(ratingX, ratingY, ratingWidth, 30);
 
@@ -256,10 +297,6 @@ void PlayerGUI::resized()
     star4.setBounds(ratingArea.removeFromLeft(starWidth).reduced(1));
     star5.setBounds(ratingArea.removeFromLeft(starWidth).reduced(1));
 
-    // Directed By
-    int height = 40;
-    developedBy.setBounds(getWidth() / 2 - (100), 40, 100, 100);
-    ourNames.setBounds(getWidth() / 2-(350), 80, 600, 100);
 }
 static bool isPlaying = false;
 static bool checkRemovePl = true;
@@ -581,6 +618,19 @@ void PlayerGUI::buttonClicked(juce::Button* button)
     else if (button == &star4) { setRating(4); }
     else if (button == &star5) { setRating(5); }
 
+    else if (button == &aButton)
+    {
+        loopPointA = playerAudio.getPosition();
+        updateABLoopPoints();
+        repaint();
+}
+    else if (button == &bButton)
+    {
+        loopPointB = playerAudio.getPosition();
+        updateABLoopPoints();
+        repaint();
+}
+
 }
 
 void PlayerGUI::sliderValueChanged(juce::Slider* slider)
@@ -790,18 +840,24 @@ void PlayerGUI::updateRatingButton()
     star4.setButtonText("4");
     star5.setButtonText("5");
 
-    
-    star1.setColour(juce::TextButton::textColourOffId, rating >= 1 ? juce::Colours::gold : juce::Colours::white);
-    star2.setColour(juce::TextButton::textColourOffId, rating >= 2 ? juce::Colours::gold : juce::Colours::white);
-    star3.setColour(juce::TextButton::textColourOffId, rating >= 3 ? juce::Colours::gold : juce::Colours::white);
-    star4.setColour(juce::TextButton::textColourOffId, rating >= 4 ? juce::Colours::gold : juce::Colours::white);
-    star5.setColour(juce::TextButton::textColourOffId, rating >= 5 ? juce::Colours::gold : juce::Colours::white);
+    star1.setColour(juce::TextButton::textColourOffId, rating >= 1 ? juce::Colours::gold : juce::Colours::lightgrey);
+    star2.setColour(juce::TextButton::textColourOffId, rating >= 2 ? juce::Colours::gold : juce::Colours::lightgrey);
+    star3.setColour(juce::TextButton::textColourOffId, rating >= 3 ? juce::Colours::gold : juce::Colours::lightgrey);
+    star4.setColour(juce::TextButton::textColourOffId, rating >= 4 ? juce::Colours::gold : juce::Colours::lightgrey);
+    star5.setColour(juce::TextButton::textColourOffId, rating >= 5 ? juce::Colours::gold : juce::Colours::lightgrey);
+  
+    juce::Colour bgColor = juce::Colour(0xff2d2d2d); 
+    star1.setColour(juce::TextButton::buttonColourId, bgColor);
+    star2.setColour(juce::TextButton::buttonColourId, bgColor);
+    star3.setColour(juce::TextButton::buttonColourId, bgColor);
+    star4.setColour(juce::TextButton::buttonColourId, bgColor);
+    star5.setColour(juce::TextButton::buttonColourId, bgColor);
 
-    star1.setColour(juce::TextButton::buttonColourId, juce::Colours::black);
-    star2.setColour(juce::TextButton::buttonColourId, juce::Colours::black);
-    star3.setColour(juce::TextButton::buttonColourId, juce::Colours::black);
-    star4.setColour(juce::TextButton::buttonColourId, juce::Colours::black);
-    star5.setColour(juce::TextButton::buttonColourId, juce::Colours::black);
+    star1.setColour(juce::TextButton::textColourOnId, juce::Colours::white);
+    star2.setColour(juce::TextButton::textColourOnId, juce::Colours::white);
+    star3.setColour(juce::TextButton::textColourOnId, juce::Colours::white);
+    star4.setColour(juce::TextButton::textColourOnId, juce::Colours::white);
+    star5.setColour(juce::TextButton::textColourOnId, juce::Colours::white);
 }
 
 void PlayerGUI::saveRatingsToFile()

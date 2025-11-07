@@ -150,13 +150,16 @@ void PlayerAudio::checkAndHandleLooping()
     {
         double currentPos = getPosition();
 
-        
-        if (currentPos < loopPointA)
+        if (loopPointA > loopPointB && loopPointB >= 0)
+        {
+            std::swap(loopPointA, loopPointB);
+        }
+
+        if (currentPos >= loopPointB && loopPointB >= 0)
         {
             transportSource.setPosition(loopPointA);
         }
-        
-        else if (currentPos >= loopPointB)
+        else if (currentPos < loopPointA && loopPointA >= 0)
         {
             transportSource.setPosition(loopPointA);
         }

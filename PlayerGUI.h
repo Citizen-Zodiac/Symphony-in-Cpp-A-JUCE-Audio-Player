@@ -64,6 +64,8 @@ private:
     juce::TextButton prevButoon{ "Prev" };
     juce::TextButton removePlButton{ "Remove Pl" };
     juce::TextButton clearABButton{ "Clear A-B" };
+    juce::TextButton aButton{ "A" };
+    juce::TextButton bButton{ "B" };
     juce::TextButton star1{ "1" }, star2{ "2" }, star3{ "3" }, star4{ "4" }, star5{ "5" };
     std::unordered_map<juce::String, int> trackRatings;
 
@@ -80,6 +82,7 @@ private:
     juce::Slider positionSlider;
     juce::Label currentTimeLabel;
     juce::Label totalTimeLabel;
+    juce::Label ratingLabel;
     //Time Helper Function
     juce::String formatTime(double seconds);  
 
