@@ -331,6 +331,11 @@ void PlayerGUI::buttonClicked(juce::Button* button)
 
                         juce::dontSendNotification);
 
+                    isPlaying = false;
+					playerAudio.play(isPlaying);
+					playButton.setButtonText("Play");
+                    playerAudio.setPosition(0.0);
+					positionSlider.setValue(0.0, juce::dontSendNotification);
                         updateRatingButton();
                 }
                 else
@@ -494,8 +499,14 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                     track.file = file;
                     playlist.push_back(track);
                     trackList.updateContent();
+                        
+                    playerAudio.loadFile(playlist[currentIndex].file);
+                    playerAudio.setPosition(pos);                    
+                    playerAudio.play(isPlaying);
+                    fileLoaded = true;
+                    thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
 
-                    if (isPlaying&&checkRemovePl)
+                        if (!isPlaying && playlist.size() > 1)
                     {
                         playerAudio.loadFile(playlist[currentIndex].file);
                         playerAudio.setPosition(pos);
@@ -503,15 +514,8 @@ void PlayerGUI::buttonClicked(juce::Button* button)
                         fileLoaded = true;
                         thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
                     }
-                    if (!isPlaying && playlist.size() > 1)
-                    {
-                        playerAudio.loadFile(playlist[currentIndex].file);
-                 
-                        fileLoaded = true;
-                        thumbnail.setSource(new juce::FileInputSource(playlist[currentIndex].file));
-                    }
                 }
-                else
+                if(playlist.empty())
                 {
                     metadataLabel.setText("No file loaded", juce::dontSendNotification);
                 }
