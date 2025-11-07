@@ -29,32 +29,75 @@ void PlayerAudio::releaseResources()
 
 bool PlayerAudio::loadFile(const juce::File& file)
 {
-
-
     if (auto* reader = formatManager.createReaderFor(file))
     {
-        // ?? Disconnect old source first
         transportSource.stop();
         transportSource.setSource(nullptr);
         readerSource.reset();
-        // Create new reader source
+
         readerSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         transportSource.setSource(readerSource.get(), 0, nullptr, reader->sampleRate);
 
-        // metadata //
-        auto values = reader->metadataValues;
-        title = values["title"];
-        artist = values["artist"];
-        duration = reader->lengthInSamples / reader->sampleRate;
+        auto& metadata = reader->metadataValues;
 
-        if (title.isEmpty())
+        title = "";
+        artist = "";
+
+        if (metadata.containsKey("Title")) title = metadata["Title"];
+        else if (metadata.containsKey("TITLE")) title = metadata["TITLE"];
+
+        if (metadata.containsKey("Artist")) artist = metadata["Artist"];
+        else if (metadata.containsKey("ARTIST")) artist = metadata["ARTIST"];
+
+     
+        if (title.isEmpty() && artist.isEmpty())
+        {
+            parseMetadataFromFilename(file.getFileNameWithoutExtension());
+        }
+        
+        else if (title.isEmpty() && !artist.isEmpty())
+        {
             title = file.getFileNameWithoutExtension();
-        if (artist.isEmpty())
+        }
+        else if (artist.isEmpty() && !title.isEmpty())
+        {
             artist = "Unknown Artist";
+        }
+
+        duration = reader->lengthInSamples / reader->sampleRate;
 
         return true;
     }
     return false;
+}
+
+
+void PlayerAudio::parseMetadataFromFilename(const juce::String& filename)
+{
+    juce::String cleanName = filename;
+
+    if (cleanName.contains(".") && cleanName.indexOf(".") < 3)
+    {
+        int dotPos = cleanName.indexOf(".");
+        juce::String potentialNumber = cleanName.substring(0, dotPos).trim();
+
+        if (potentialNumber.containsOnly("0123456789"))
+        {
+            cleanName = cleanName.substring(dotPos + 1).trim();
+        }
+    }
+
+    if (cleanName.contains(" - "))
+    {
+        int dashPos = cleanName.indexOf(" - ");
+        artist = cleanName.substring(0, dashPos).trim();
+        title = cleanName.substring(dashPos + 3).trim(); 
+    }
+    else
+    {
+        title = cleanName;
+        artist = "Unknown Artist";
+    }
 }
 void PlayerAudio::restart()
 {
